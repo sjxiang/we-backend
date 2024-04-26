@@ -21,7 +21,7 @@ func NewIdGenerator(now time.Time, machineId int64) (*idGenerator, error) {
 	return &idGenerator{node: node}, nil
 }
 
-func (idg *idGenerator) GenID() int64 {
-	return idg.node.Generate().Int64()
+func (i *idGenerator) GenID() int64 {
+	return i.node.Generate().Int64()
 }
 

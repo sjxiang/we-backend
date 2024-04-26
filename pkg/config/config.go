@@ -6,23 +6,23 @@ import (
 )
 
 type Config struct {
-	ServerHost        string
-	ServerPort        string
-	ServerMode        string 
-	SecretKey         string
-	ServerIgnorePaths []string
-	ServerAuthzMode   int
+	ServerHost             string
+	ServerPort             string
+	ServerMode             string 
+	SecretKey              string
+	ServerAuthzDeployMode  string  // 认证部署模式
 
-	MySQLHost         string 
-	MySQLPort         string 
-	MySQLUser         string 
-	MySQLPassword     string 
-	MySQLDatabase     string 
+	MySQLHost              string 
+	MySQLPort              string 
+	MySQLUser              string 
+	MySQLPassword          string 
+	MySQLDatabase          string 
 	
-	RedisHost         string 
-	RedisPort         string 
-	RedisPassword     string 
-	RedisDatabase     int 
+	RedisNetworkType       string
+	RedisHost              string 
+	RedisPort              string 
+	RedisPassword          string 
+	RedisDatabase          int 
 }
 
 
@@ -33,9 +33,7 @@ func LoadConfig() (config *Config, err error) {
 	cfg.MySQLPort         = "8001"
 	cfg.ServerMode        = consts.SERVER_MODE_DEV
 	cfg.SecretKey         = "8xEMrWkBARcDDYQ"
-	cfg.ServerAuthzMode   = consts.SERVER_AUTHZ_MODE_COOKIE_AND_SESSION
-
-	cfg.ServerIgnorePaths = []string{"/api/v1/user/signup", "/api/v1/user/login"}
+	cfg.ServerAuthzDeployMode = consts.ServerAuthzDeployModeMulti
 
 	cfg.MySQLHost         = "127.0.0.1"
 	cfg.MySQLPort         = "13306"
@@ -43,6 +41,7 @@ func LoadConfig() (config *Config, err error) {
 	cfg.MySQLPassword     = "my-secret-pw"
 	cfg.MySQLDatabase     = "we_backend"
 
+	cfg.RedisNetworkType  = "tcp"
 	cfg.RedisHost         = "127.0.0.1"
 	cfg.RedisPort         = "16379"
 	cfg.RedisPassword     = ""
@@ -81,11 +80,8 @@ func (cfg *Config) GetRedisAddr() string {
 	return fmt.Sprintf("%s:%s", cfg.RedisHost, cfg.RedisPort)
 }
 
-
-func (cfg *Config) EnableAuthzBySession() bool {
-	return cfg.ServerAuthzMode == consts.SERVER_AUTHZ_MODE_COOKIE_AND_SESSION
+func (cfg *Config) EnableDeploySingle() bool {
+	return cfg.ServerAuthzDeployMode == consts.ServerAuthzDeployModeSingle
 }
 
-func (cfg *Config) EnableAuthzByJWT() bool {
-	return cfg.ServerAuthzMode == consts.SERVER_AUTHZ_MODE_JWT
-}
+

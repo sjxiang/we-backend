@@ -9,19 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *middleware) AuthenticateUserByCookieAndSession() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		
+func (h *middleware) AuthenticateUserByCookieAndSession(ignorePaths ...string) gin.HandlerFunc {
+	return func(c *gin.Context) {	
+
 		// 不需要校验的路由 
-		for _, path := range h.ignorePaths {
+		for _, path := range ignorePaths {
 			if c.Request.URL.Path == path {
 				return
 			}
 		}
 
+		// 校验登录
 		session := sessions.Default(c) 
-		userId := session.Get(consts.SessionKeyUserId)
-		lastTime := session.Get(consts.SessionKeyLastTime)
+		userId, lastTime := session.Get(consts.SessionKeyUserId), session.Get(consts.SessionKeyLastTime)
 
 		if userId == nil || lastTime == nil {
 			// 没有登录
@@ -45,6 +45,5 @@ func (h *middleware) AuthenticateUserByCookieAndSession() gin.HandlerFunc {
 
 		c.Set(consts.SessionKeyUserId, userId.(int64))
 		c.Next()
-
 	}
 }

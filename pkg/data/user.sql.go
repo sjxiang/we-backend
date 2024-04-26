@@ -82,11 +82,11 @@ func (impl *userDatabase) CreateUser(ctx context.Context, arg types.CreateUserPa
 
 	if err := impl.DB.Exec(query, arg.Email, arg.Password, now, now).Error; err != nil {
 	
-		const uniqueViolation uint16 = 1062  
+		const uniqueViolationErrNo uint16 = 1062  
 
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			switch mysqlErr.Number {
-			case uniqueViolation: 
+			case uniqueViolationErrNo: 
 				return x.ErrDuplicateEmail
 			}
 		}

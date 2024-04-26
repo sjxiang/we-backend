@@ -10,7 +10,7 @@ import (
 )
 
 // 跨域资源共享
-func (h *middleware) HandleCors() gin.HandlerFunc {
+func (h *middleware) Cors() gin.HandlerFunc {
 	
 	cfg := cors.DefaultConfig()
 
@@ -62,7 +62,7 @@ func (h *middleware) HandleCors() gin.HandlerFunc {
 
 
 
-func (h *middleware) HandleCorsV1() gin.HandlerFunc {
+func (h *middleware) CorsV1() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// 哪些请求来源是允许的（e.g. 微博首页跳转）
@@ -88,7 +88,7 @@ func (h *middleware) HandleCorsV1() gin.HandlerFunc {
 }
 
 
-func (h *middleware) HandleCorsV2() gin.HandlerFunc {
+func (h *middleware) CorsV2() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 如果 HTTP 请求不是 options 跨域请求，则继续处理 HTTP 请求
 		if c.Request.Method != "OPTIONS" {

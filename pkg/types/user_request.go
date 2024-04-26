@@ -27,6 +27,18 @@ func (req *LoginRequest) ExportPasswordInString() string {
 
 
 type (
+	EditInfoRequest struct {
+		NickName string `json:"nickname" binding:"required,gte=8,lte=30"`
+		Birthday string `json:"birthday" binding:"required,len=10"`  // 1997-09-12
+		Intro    string `json:"intro" binding:"required,min=1,max=1000"`
+		Avatar   string `json:"avatar" binding:"required"`
+	}
+
+	
+	// 注意，其它字段，尤其是密码、邮箱和手机
+	// 修改都要通过别的手段
+	// 邮箱和手机都要验证
+	// 密码更加不用多说了
 	ProfileRequest struct {
 		NickName string `json:"nickname" binding:"required,gte=8,lte=30"`
 		Birthday string `json:"birthday" binding:"required,len=10"`  // e.g. 1997-09-12
@@ -35,7 +47,5 @@ type (
 		Age      uint   `json:"age" binding:"required,numeric"`
 	}
 
-	EditInfoRequest struct {
 
-	}
 )

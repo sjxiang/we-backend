@@ -23,3 +23,11 @@ func NewAuthHandler(uc *biz.UserUsecase) *AuthHandler {
 func NewUserHandler(uc *biz.UserUsecase) *UserHandler {
 	return &UserHandler{usecase: uc}
 }
+
+
+
+// serializer 序列化器
+
+type Response struct {
+
+}

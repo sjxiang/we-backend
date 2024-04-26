@@ -114,10 +114,3 @@ func Auth() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-
-func AuthenticateUserByThirdParty() gin.HandlerFunc {
-	return func(c *gin.Context) {
-
-	}
-}

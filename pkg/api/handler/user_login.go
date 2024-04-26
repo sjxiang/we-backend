@@ -12,8 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
-	"we-backend/pkg/api/handler/request"
 	"we-backend/pkg/consts"
+	"we-backend/pkg/types"
 	"we-backend/pkg/x"
 )
 
@@ -21,7 +21,7 @@ import (
 func (h *UserHandler) UserLogin(c *gin.Context) {
 
 	// fetch payload
-	req := request.NewLoginRequest()
+	req := types.NewLoginRequest()
 
 	if err := json.NewDecoder(c.Request.Body).Decode(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

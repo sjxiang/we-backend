@@ -8,7 +8,7 @@ import (
 )
 
 // 用户退出
-func (h *UserHandler) Logout(c *gin.Context) {
+func (h *UserHandler) UserLogout(c *gin.Context) {
 	
 	s := sessions.Default(c)
 	s.Options(sessions.Options{

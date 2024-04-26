@@ -8,8 +8,6 @@ import (
 	"we-backend/pkg/api/routes"
 	"we-backend/pkg/config"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,26 +33,8 @@ func NewServerHTTP(cfg *config.Config, userHandler *handler.UserHandler, authHan
 	})
 
 	// set up routes
-	routes.UserRoutes(engine.Group("/api/v1"), userHandler, authHandler, middleware)
-	
-	if cfg.EnableAuthzBySession() {
-		// set up session (Part 1)
-		store := cookie.NewStore([]byte("8xEMrWkBARcDDYQ"))
-		// Also set Secure: true if using SSL, you should though
-		store.Options(sessions.Options{
-				HttpOnly: true, 
-				MaxAge:   7 * 86400,  // 7 天
-				Path:     "/",
-			})
-		engine.Use(sessions.Sessions("gin-session", store))
+	routes.UserRoutes(cfg, engine.Group("/api/v1"), userHandler, authHandler, middleware)
 
-		// set up session (Part 3)
-		engine.Use(middleware.AuthenticateUserByCookieAndSession())
-	}
-
-	if cfg.EnableAuthzByJWT() {
-		panic("Implement me!")
-	}
 
 	return &ServerHTTP{Engine: engine}
 }

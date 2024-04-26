@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"we-backend/pkg/api/handler/request"
+	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
 	"we-backend/pkg/x"
 )
@@ -17,14 +17,14 @@ func (h *UserHandler) UserSignup(c *gin.Context) {
 	// fetch needed param
 
 	// get request body
-	var body request.Signup
+	var req types.SignupRequest
 	
-	if ok := utils.BindData(c, &body); !ok {
+	if ok := utils.BindData(c, &req); !ok {
 		return
 	}
 	
 	// validate
-	if body.Password != body.ConfirmPassword {
+	if req.Password != req.ConfirmPassword {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": true,
 			"msg":   "两次密码输入不一致",
@@ -32,7 +32,7 @@ func (h *UserHandler) UserSignup(c *gin.Context) {
 		return
 	}
 
-	minSize, digit, special, letter := utils.ValidatePasswordMiddle(body.Password)
+	minSize, digit, special, letter := utils.ValidatePasswordMiddle(req.Password)
 	if !minSize || !digit || !special || !letter {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": true,
@@ -44,7 +44,7 @@ func (h *UserHandler) UserSignup(c *gin.Context) {
 	// fetch data
 	ctx := c.Request.Context()
 
-	if err := h.usecase.UserSignup(ctx, body.Email, body.Password); err != nil {
+	if err := h.usecase.UserSignup(ctx, req.Email, req.Password); err != nil {
 		if errors.Is(err, x.ErrUserAlreadyExists) {
 			c.JSON(http.StatusConflict, gin.H{
 				"error": true,
