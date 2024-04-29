@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *middleware) AuthenticateUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
+func (h *middleware) AuthenticateUserByJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
 
 	}
 }
@@ -28,6 +28,7 @@ type JwtClaim struct {
 	UserId   int64
 	Email    string
 	UserType string
+
 	jwt.StandardClaims
 }
 

@@ -10,7 +10,7 @@ type Config struct {
 	ServerPort             string
 	ServerMode             string 
 	SecretKey              string
-	ServerAuthzDeployMode  string  // 认证部署模式
+	ServerAuthzMode        int8
 
 	MySQLHost              string 
 	MySQLPort              string 
@@ -33,7 +33,7 @@ func LoadConfig() (config *Config, err error) {
 	cfg.MySQLPort         = "8001"
 	cfg.ServerMode        = consts.SERVER_MODE_DEV
 	cfg.SecretKey         = "8xEMrWkBARcDDYQ"
-	cfg.ServerAuthzDeployMode = consts.ServerAuthzDeployModeMulti
+	cfg.ServerAuthzMode   = consts.ServerAuthzModeCookie
 
 	cfg.MySQLHost         = "127.0.0.1"
 	cfg.MySQLPort         = "13306"
@@ -80,8 +80,18 @@ func (cfg *Config) GetRedisAddr() string {
 	return fmt.Sprintf("%s:%s", cfg.RedisHost, cfg.RedisPort)
 }
 
-func (cfg *Config) EnableDeploySingle() bool {
-	return cfg.ServerAuthzDeployMode == consts.ServerAuthzDeployModeSingle
+func (cfg *Config) EnableAuthzCookie() bool {
+	return cfg.ServerAuthzMode == consts.ServerAuthzModeCookie
 }
 
+func (cfg *Config) EnableAuthzMultiSession() bool {
+	return cfg.ServerAuthzMode == consts.ServerAuthzModeSessionMulti
+}
 
+func (cfg *Config) EnableAuthzSingleSession() bool {
+	return cfg.ServerAuthzMode == consts.ServerAuthzModeSessionSingle
+}
+
+func (cfg *Config) EnableAuthzJWT() bool {
+	return cfg.ServerAuthzMode == consts.ServerAuthzModeJWT
+}

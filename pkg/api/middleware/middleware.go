@@ -9,8 +9,10 @@ import (
 
 type Middleware interface {
 	Cors() gin.HandlerFunc 
-	AuthenticateUser() gin.HandlerFunc
-	AuthenticateUserByCookieAndSession(ignorePaths ...string) gin.HandlerFunc
+	AuthenticateUserByJWT() gin.HandlerFunc
+
+	AuthenticateUserByCookie(ignorePaths ...string) gin.HandlerFunc
+	AuthenticateUserByCookieAndSession(ignorePaths ...string) gin.HandlerFunc 
 }
 
 type middleware struct {

@@ -9,13 +9,15 @@ import (
 	"github.com/gin-contrib/cors"
 )
 
+
 // 跨域资源共享
 func (h *middleware) Cors() gin.HandlerFunc {
 	
 	cfg := cors.DefaultConfig()
 
 	cfg.AllowMethods     = []string{"GET", "POST"}
-	cfg.AllowHeaders     = []string{"Content-Type", "Authorization"}
+	cfg.AllowHeaders     = []string{"*"}  // e.g. "Authorization"
+	cfg.ExposeHeaders    = []string{"*"}
 	cfg.AllowCredentials = true
 	cfg.MaxAge           = 12 * time.Hour
 	
@@ -60,9 +62,7 @@ func (h *middleware) Cors() gin.HandlerFunc {
 
 */
 
-
-
-func (h *middleware) CorsV1() gin.HandlerFunc {
+func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// 哪些请求来源是允许的（e.g. 微博首页跳转）
@@ -73,8 +73,7 @@ func (h *middleware) CorsV1() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Headers", "*")
 		// 响应返回的非标准 Headers
 		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, "+
-			"Access-Control-Allow-Headers, Authorization, Cache-Control, Content-Language, Content-Type, x-token")
-		// 支持的 HTTP 方法
+			"Access-Control-Allow-Headers, Authorization, Cache-Control, Content-Language, Content-Type, X-token")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
 		c.Header("Content-Type", "application/json")
 		
@@ -82,13 +81,13 @@ func (h *middleware) CorsV1() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
-
 		c.Next()
 	}
 }
 
 
-func (h *middleware) CorsV2() gin.HandlerFunc {
+
+func (h *middleware) CorsV1() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 如果 HTTP 请求不是 options 跨域请求，则继续处理 HTTP 请求
 		if c.Request.Method != "OPTIONS" {

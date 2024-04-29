@@ -120,9 +120,9 @@ func (impl *userDatabase) Exists(email string) (bool, error) {
 
 
 func (impl *userDatabase) FindUserByEmail(ctx context.Context, email string) (*types.User, error) {
-	var row types.User
+	var row UserM
 
-	if err := impl.DB.Table(consts.TABLE_NAME_USER).Where("email = ?").First(&row).Error; err != nil {
+	if err := impl.DB.Table(consts.TABLE_NAME_USER).Where("email = ?", email).First(&row).Error; err != nil {
 		
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, x.ErrNoRecord
@@ -140,7 +140,7 @@ func (impl *userDatabase) FindUserByEmail(ctx context.Context, email string) (*t
 
 
 func (impl *userDatabase) FindUserByMobile(ctx context.Context, mobile string) (types.User, error) {
-	var item types.User
+	var item UserM
 
 	if err := impl.DB.Table(consts.TABLE_NAME_USER).Where("mobile = ?").First(&item).Error; err != nil {
 		

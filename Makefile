@@ -35,5 +35,8 @@ test:
 	go test -count=1 -v ./...
 
 
+run:
+	go run ./cmd/server/main.go 
 
-.PHONY: mysql redis test 
+
+.PHONY: mysql redis test run

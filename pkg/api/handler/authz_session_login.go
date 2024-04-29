@@ -17,9 +17,8 @@ import (
 	"we-backend/pkg/x"
 )
 
-// 用户登录
-func (h *UserHandler) UserLogin(c *gin.Context) {
 
+func (h *AuthHandler) AuthzLoginBySession(c *gin.Context) {
 	// fetch payload
 	req := types.NewLoginRequest()
 
@@ -63,14 +62,20 @@ func (h *UserHandler) UserLogin(c *gin.Context) {
 		return
 	}
 
-	// set up session (Part 2)
-	s := sessions.Default(c)
-	s.Clear()
-	s.Set(consts.SessionKeyUserId, user.ID)
-	s.Set(consts.SessionKeyLastTime, time.Now())
-	s.Save()
+	// 设置 session
+	var (
+		uid int64     = user.ID
+		now time.Time = time.Now()
+	)
 	
-	// feedback
-	c.JSON(http.StatusOK, nil)
-}
+	session := sessions.Default(c)
+	session.Set(consts.SessionKeyUserId, uid)
+	session.Set(consts.SessionKeyLastTime, now)
+	session.Save()
 
+	// feedback
+	c.JSON(http.StatusOK, gin.H{
+		"error": false,
+		"msg":   "登录成功",
+	})
+} 

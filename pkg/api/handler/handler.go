@@ -6,7 +6,7 @@ import "we-backend/pkg/biz"
 type (	
 	// 认证相关
 	AuthHandler struct {
-		uc *biz.UserUsecase
+		usecase *biz.UserUsecase
 
 	}
 
@@ -17,7 +17,7 @@ type (
 )
 
 func NewAuthHandler(uc *biz.UserUsecase) *AuthHandler {
-	return &AuthHandler{uc: uc}
+	return &AuthHandler{usecase: uc}
 }
 
 func NewUserHandler(uc *biz.UserUsecase) *UserHandler {

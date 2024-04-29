@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -11,8 +12,8 @@ import (
 	"we-backend/pkg/x"
 )
 
-// 用户注册 register
-func (h *UserHandler) UserSignup(c *gin.Context) {
+// 注册 register
+func (h *AuthHandler) AuthzSignup(c *gin.Context) {
 	
 	// fetch needed param
 
@@ -42,9 +43,7 @@ func (h *UserHandler) UserSignup(c *gin.Context) {
 	}
 
 	// fetch data
-	ctx := c.Request.Context()
-
-	if err := h.usecase.UserSignup(ctx, req.Email, req.Password); err != nil {
+	if err := h.usecase.UserSignup(context.TODO(), req.Email, req.Password); err != nil {
 		if errors.Is(err, x.ErrUserAlreadyExists) {
 			c.JSON(http.StatusConflict, gin.H{
 				"error": true,
@@ -59,7 +58,6 @@ func (h *UserHandler) UserSignup(c *gin.Context) {
 		})
 		return
 	}
-
 
 	// feedback
 	c.JSON(http.StatusOK, gin.H{
