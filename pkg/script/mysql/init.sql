@@ -1,31 +1,38 @@
 
-CREATE DATABASE IF NOT EXISTS `we_backend`;
-
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS `we_backend` DEFAULT CHARACTER SET = 'utf8mb4';
+    
+-- 使用数据库
 USE `we_backend`;
 
 -- 查看建表语句
-SHOW CREATE TABLE `user`;
+SHOW CREATE TABLE `users`;
+
+-- 删除表
+DROP TABLE IF EXISTS `users`;
 
 
-
-CREATE TABLE IF NOT EXISTS `user` (
-    `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `user_id` varchar(64) DEFAULT '' COMMENT '用户id',
-    `password` varchar(64) DEFAULT '' COMMENT '密码',
-    `nickname` varchar(64) DEFAULT '' COMMENT '昵称',
-    `email` varchar(64) DEFAULT '' COMMENT '邮箱',
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+CREATE TABLE `users` (
+    `id`           bigint(20)    NOT NULL AUTO_INCREMENT            COMMENT '自增id',
+    `created_at`   timestamp     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+    `updated_at`   timestamp     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `email`        varchar(64)   NOT NULL DEFAULT ''                COMMENT '邮件',
+    `mobile`       varchar(64)   NOT NULL DEFAULT ''                COMMENT '手机号',
+    `nickname`     varchar(64)   NOT NULL DEFAULT ''                COMMENT '昵称',
+    `password`     varchar(64)   NOT NULL DEFAULT ''                COMMENT '密码',
+    `intro`        varchar(1024) NOT NULL DEFAULT ''                COMMENT '自我介绍',
+    `avatar`       varchar(1024) NOT NULL DEFAULT ''                COMMENT '头像',
+    `birthday`     datetime(3)            DEFAULT NULL              COMMENT '生日',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_user_id` (`user_id`) USING BTREE,
-    UNIQUE KEY `uk_email` (`email`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='cms账号信息';
+    UNIQUE INDEX `uk_email`(`email`) USING BTREE,
+    UNIQUE INDEX `uk_mobile`(`mobile`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户信息表';
 
 
 INSERT INTO 
-    `account` (`user_id`, `nickname`, `password`, `email`)
+    `users` (`id`, `nickname`, `password`, `email`, `mobile`)
 VALUES 
-    ("ea7ee4ac-4b0b-4f78-846e-26e7ea70411d", "sjxiang1997", "123456789qwe", "1535484943@qq.com");
+    (24, "sjxiang1997", "123456789qwe", "1535484943@qq.com", "18812347777");
 
 SELECT EXISTS(
     SELECT true FROM account WHERE user_id = "ea7ee4ac-4b0b-4f78-846e-26e7ea70411d"

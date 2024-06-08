@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -15,10 +16,10 @@ import (
 // 注册 register
 func (h *AuthHandler) AuthzSignup(c *gin.Context) {
 	
-	// fetch needed param
-
-	// get request body
 	var req types.SignupRequest
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		return // InvalidJSON
+	}
 	
 	if ok := utils.BindData(c, &req); !ok {
 		return

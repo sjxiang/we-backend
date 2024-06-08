@@ -1,8 +1,6 @@
 package main
 
 import (
-	"we-backend/pkg/data"
-
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,5 +18,5 @@ func main() {
 		log.Fatal().Err(err).Msg("cannot connect to database")
 	}
 
-	database.AutoMigrate(&data.UserM{})
+	database.Debug().AutoMigrate()
 }

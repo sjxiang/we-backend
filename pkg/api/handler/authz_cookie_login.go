@@ -28,12 +28,23 @@ func (h *AuthHandler) AuthzLoginByCookie(c *gin.Context) {
 	req := types.NewLoginRequest()
 
 	if err := json.NewDecoder(c.Request.Body).Decode(req); err != nil {
+		// Invalid JSON
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": true,
 			"msg":   fmt.Sprintf("parse request body error\n %+v", err),  
 		})
 		return
 	}
+
+	if violations := req.Validate(); len(violations) > 0 {
+		// Invalid Reuqest Data
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error": true,
+			"msg":   violations,  
+		})
+		return
+	}
+
 
 	// validate payload required fields
 	validate := validator.New()

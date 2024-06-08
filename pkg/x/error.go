@@ -9,6 +9,9 @@ import (
 
 var (
 	
+	// ErrEmpty
+	// ErrInvalid
+
 	// data
 	ErrNoRecord           = errors.New("data: no matching record found")
 

@@ -10,9 +10,8 @@ import (
 type Middleware interface {
 	Cors() gin.HandlerFunc 
 	AuthenticateUserByJWT() gin.HandlerFunc
-
+	// EnableCors()
 	AuthenticateUserByCookie(ignorePaths ...string) gin.HandlerFunc
-	AuthenticateUserByCookieAndSession(ignorePaths ...string) gin.HandlerFunc 
 }
 
 type middleware struct {
@@ -24,3 +23,5 @@ func NewMiddleware() Middleware {
 }
 
 
+// authn 认证
+// authz 授权 
