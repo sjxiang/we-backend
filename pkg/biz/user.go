@@ -6,18 +6,6 @@ import (
 	"we-backend/pkg/types"
 )
 
-
-type UserRepo interface {
-	Insert(ctx context.Context, user types.User) (int64, error)
-	FindOne(ctx context.Context, id int64) (*types.User, error)
-	FindOneByEmail(ctx context.Context, email string) (*types.User, error) 
-	FindOneByMobile(ctx context.Context, mobile string) (*types.User, error) 
-	Exists(ctx context.Context, id int64) (bool, error) 
-	Delete(ctx context.Context, id int64) error
-	Update(ctx context.Context, user types.User) error 
-	All(ctx context.Context) ([]*types.User, error)
-}
-
 type UserUsecase struct {
 	userRepo UserRepo
 }
@@ -26,7 +14,27 @@ func NewUserUsecase(userRepo UserRepo) *UserUsecase {
 	return &UserUsecase{userRepo: userRepo}
 }
 
-// func (impl *UserUsecase) UserSignup(ctx context.Context, email, password string) error {
+func (uc *UserUsecase) UserRegister(ctx context.Context, req *types.RegisterRequest) (*types.RegisterResponse, error) {
+
+	return nil, nil 
+}
+
+
+func (uc *UserUsecase) UserLogin(ctx context.Context, req *types.LoginRequest) (*types.LoginResponse, error) {
+
+	return nil, nil 
+}
+
+func (uc *UserUsecase) UserProfile(ctx context.Context, req *types.ProfileRequest) (*types.ProfileResponse, error) {
+
+	return nil, nil 
+}
+
+func (uc *UserUsecase) UserEditInfo(ctx context.Context, req *types.EditInfoRequest) (*types.EditInfoResponse, error) {
+
+	return nil, nil 
+}
+
 	
 // 	hashedPassword, err := utils.GenerateHashFromPassword(password)
 // 	if err != nil {

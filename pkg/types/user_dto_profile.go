@@ -140,3 +140,12 @@ package types
 
 
 // )
+
+type ProfileRequest struct {
+
+}
+
+
+type ProfileResponse struct {
+	
+}

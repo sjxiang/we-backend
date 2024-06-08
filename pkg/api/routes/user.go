@@ -42,13 +42,6 @@ func UserRoutes(cfg *config.Config, apiv1 *gin.RouterGroup, userHandler *handler
 		authGroup.GET("/me", authHandler.AuthzMe)
 	}
 
-	// jwt
-	if cfg.EnableAuthzJWT() {
-		authGroup.POST("/signup", authHandler.AuthzSignup)
-
-		authGroup.GET("/me", authHandler.AuthzMe)
-		panic("implement me")
-	}
 	
 	// *** 用户 ***
 	userGroup := apiv1.Group("/user")

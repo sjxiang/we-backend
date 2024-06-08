@@ -6,40 +6,14 @@ import (
 )
 
 
-func ValidatePassword(password string) (minSize, digit, special, lowercase, uppercase bool) {
-	for _, c := range password {
-		switch {
-			// 数字
-		case unicode.IsNumber(c):
-			digit = true
-		
-			// 大写字母
-		case unicode.IsUpper(c):
-			uppercase = true
-		
-			// 小写字母
-		case unicode.IsLower(c):
-			lowercase = true
-		
-			// 特殊字符
-		case unicode.IsPunct(c) || unicode.IsSymbol(c):
-			special = true
-		}
-	}
-
-	minSize = len(password) >= 8
-	return
-}
-
-
-// 中等强度（数字 + 字母 + 特殊字符，组合即可）
-func ValidatePasswordMiddle(password string) (minSize, digit, special, letter bool) {
+// 校验密码组成，组合（数字 + 字母 + 特殊字符）
+func ValidatePassword(password string) (minSize, digit, special, letter bool) {
 	for _, c := range password {
 		switch {
 		// 数字
 		case unicode.IsNumber(c):
 			digit = true
-		// 字母
+		// 字母（大小写不敏感）
 		case unicode.IsUpper(c) || unicode.IsLower(c):
 			letter = true
 		// 特殊字符

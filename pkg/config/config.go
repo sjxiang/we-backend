@@ -29,6 +29,9 @@ type Config struct {
 	RedisPort              string 
 	RedisPassword          string 
 	RedisDB                int 
+
+	JWTIssuer              string 
+	JWTExpirationTime      int64  
 }
 
 
@@ -50,6 +53,9 @@ func LoadConfig() (config *Config, err error) {
 	cfg.RedisPort         = "16379"
 	cfg.RedisPassword     = ""
 	cfg.RedisDB           = 0
+	
+	cfg.JWTIssuer         = "we"
+	cfg.JWTExpirationTime = 30 * 86400
 	
 	return cfg, nil
 }

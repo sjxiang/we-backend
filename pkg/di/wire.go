@@ -13,16 +13,18 @@ func InitializeApi(cfg *config.Config) (*api.ServerHTTP, error) {
 	
 	// external service
 	
-	// repository
+	// db
 	db := data.NewDB(cfg)
-	ur := data.NewUserRepo(db)
+	
+	// repository
+	userRepo := data.NewUserRepo(db)
 
 	// usecase
-	uc := biz.NewUserUsecase(ur)
+	userUsecase := biz.NewUserUsecase(userRepo)
 
 	// handler
-	userHandler := handler.NewUserHandler(uc)
-	authHandler := handler.NewAuthHandler(uc)
+	userHandler := handler.NewUserHandler(userUsecase)
+	authHandler := handler.NewAuthHandler(userUsecase)
 
 	// middleware
 	middleware := middleware.NewMiddleware()
