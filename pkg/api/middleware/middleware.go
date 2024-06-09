@@ -8,10 +8,8 @@ import (
 
 
 type Middleware interface {
-	Cors() gin.HandlerFunc 
-	AuthenticateUserByJWT() gin.HandlerFunc
-	// EnableCors()
-	AuthenticateUserByCookie(ignorePaths ...string) gin.HandlerFunc
+	Authenticate() gin.HandlerFunc
+	EnableCORS() gin.HandlerFunc
 }
 
 type middleware struct {
@@ -22,6 +20,7 @@ func NewMiddleware() Middleware {
 	return &middleware{}
 }
 
+// 	ErrNoAuth                 = "请求头中的auth为空"
+// 	ErrAuthFormatInvalid      = "请求头中的auth格式有错误"
 
-// authn 认证
-// authz 授权 
+

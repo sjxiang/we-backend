@@ -11,11 +11,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *middleware) AuthenticateUserByJWT() gin.HandlerFunc {
+
+// Authenticate anthn 认证
+func (h *middleware) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 	}
 }
+
+
+// Authorize authz 授权
+func (mw middleware) Authorize() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		
+	}
+}
+
+func (mw middleware) RemoteJWTAuth() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		
+	}
+}
+
+
+
+
+// kidRaw, exists := token.Header["kid"]
+// if !exists {
+// 	return Claims{}, fmt.Errorf("kid missing from header: %w", err)
+// }
+
+// kid, ok := kidRaw.(string)
+// if !ok {
+// 	return Claims{}, fmt.Errorf("kid malformed: %w", err)  // 畸形
+// }
 
 
 type JwtWrapper struct {

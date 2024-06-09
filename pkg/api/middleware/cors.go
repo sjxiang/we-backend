@@ -11,7 +11,7 @@ import (
 
 
 // 跨域资源共享
-func (h *middleware) Cors() gin.HandlerFunc {
+func (h *middleware) EnableCORS() gin.HandlerFunc {
 	
 	cfg := cors.DefaultConfig()
 
@@ -85,26 +85,3 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
-
-
-func (h *middleware) CorsV1() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// 如果 HTTP 请求不是 options 跨域请求，则继续处理 HTTP 请求
-		if c.Request.Method != "OPTIONS" {
-			c.Next()
-		
-		// 如果 HTTP 请求是 options 跨域请求，则设置跨域 Header，并返回
-		} else {
-
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Credentials", "true")
-			c.Header("Access-Control-Allow-Headers", "Authorization")
-			c.Header("Access-Control-Expose-Headers", "x-token")
-			c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
-			c.Header("Content-Type", "application/json")
-					
-			c.AbortWithStatus(http.StatusNoContent)
-			return
-		}
-	}
-}

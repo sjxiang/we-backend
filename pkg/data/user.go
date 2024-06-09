@@ -113,6 +113,9 @@ func (impl *userDatabase) All(ctx context.Context) ([]*types.User, error) {
 	return nil, nil
 }
 
+// 修改密码
+
+
 
 
 

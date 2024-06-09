@@ -17,7 +17,7 @@ type ServerHTTP struct {
 	Engine *gin.Engine
 }
 
-func NewServerHTTP(cfg *config.Config, userHandler *handler.UserHandler, authHandler *handler.AuthHandler, middleware middleware.Middleware) *ServerHTTP {
+func NewServerHTTP(cfg *config.Config, userHandler *handler.UserHandler, middleware middleware.Middleware) *ServerHTTP {
 
 	engine := gin.New()
 
@@ -33,7 +33,7 @@ func NewServerHTTP(cfg *config.Config, userHandler *handler.UserHandler, authHan
 	})
 
 	// set up routes
-	routes.UserRoutes(cfg, engine.Group("/api/v1"), userHandler, authHandler, middleware)
+	routes.UserRoutes(cfg, engine.Group("/api/v1"), userHandler, middleware)
 
 
 	return &ServerHTTP{Engine: engine}
@@ -41,5 +41,5 @@ func NewServerHTTP(cfg *config.Config, userHandler *handler.UserHandler, authHan
 
 
 func (s *ServerHTTP) Start() error {
-	return s.Engine.Run(":8000")
+	return s.Engine.Run(":5678")
 }

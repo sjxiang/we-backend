@@ -98,13 +98,36 @@ func (impl *userRawDatabase) FindOneByEmail(ctx context.Context, email string) (
 	return nil, nil 
 }
 
-func (impl *userRawDatabase) Exists(id int64) (bool, error) {
+func (impl *userRawDatabase) Exists(ctx context.Context, id int64) (bool, error) {
 	
 	var exists bool
 
-	stmt := "SELECT EXISTS(SELECT true FROM user WHERE id = ?)"
+	stmt := "SELECT EXISTS(SELECT true FROM users WHERE id = ?)"
 
 	err := impl.rawDB.QueryRow(stmt, id).Scan(&exists)
 	
 	return exists, err
+}
+
+func (impl *userRawDatabase) Delete(ctx context.Context, id int64) error {
+	stmt := `DELETE FROM users WHERE id = ?`
+
+	_, err := impl.rawDB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil 
+}
+
+func (impl *userRawDatabase) ResetPassword(ctx context.Context, id int64, password string) error {
+
+	stmt := `UPDATE users SET hashed_password = ? WHERE id = ?`
+	
+	_, err := impl.rawDB.Exec(stmt, password, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

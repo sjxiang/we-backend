@@ -24,10 +24,9 @@ func InitializeApi(cfg *config.Config) (*api.ServerHTTP, error) {
 
 	// handler
 	userHandler := handler.NewUserHandler(userUsecase)
-	authHandler := handler.NewAuthHandler(userUsecase)
 
 	// middleware
 	middleware := middleware.NewMiddleware()
 
-	return api.NewServerHTTP(cfg, userHandler, authHandler, middleware), nil 
+	return api.NewServerHTTP(cfg, userHandler, middleware), nil 
 }
