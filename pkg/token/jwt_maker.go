@@ -16,8 +16,9 @@ type JWTMaker struct {
 
 func NewJWTMaker(secretKey string) (Maker, error) {
 	if len(secretKey) < minSecretKeySize {
-		return nil, fmt.Errorf("无效密钥长度：最少 %d 个字符", minSecretKeySize)
+		return nil, fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
 	}
+
 	return &JWTMaker{secretKey}, nil
 }
 
@@ -50,12 +51,13 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		if ok && errors.Is(verr.Inner, ErrExpiredToken) {
 			return nil, ErrExpiredToken  // 过期
 		}
+		
 		return nil, ErrInvalidToken  // 被篡改了，签名或者密钥对不上，无效
 	}
 
 	payload, ok := jwtToken.Claims.(*Payload)
 	if !ok {
-		return nil, ErrInvalidToken  // 类型断言拉了，无效
+		return nil, ErrInvalidToken  // 类型断言拉了
 	}
 
 	return payload, nil

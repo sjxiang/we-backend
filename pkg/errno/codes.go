@@ -1,6 +1,5 @@
 package errno
 
-
 // 成功返回
 const OK uint32 = 200
 

@@ -102,6 +102,28 @@ func (impl *userDatabase) Exists(ctx context.Context, id int64) (bool, error) {
 }
 
 func (impl *userDatabase) Delete(ctx context.Context, id int64) error {
+	
+	if err := impl.db.Transaction(func(tx *gorm.DB) error {
+		var exists bool
+
+		stmt := "SELECT EXISTS(SELECT true FROM user WHERE id = ?)"
+
+		if err := tx.Raw(stmt, id).Scan(&exists).Error; err != nil {
+			return err
+		}
+		if !exists {
+			return ErrRecordNoFound
+		}
+		
+		if err := tx.Delete(&types.User{}, id).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err 
+	}
+
 	return nil
 }
 
@@ -109,13 +131,13 @@ func (impl *userDatabase) Update(ctx context.Context, user types.User) error {
 	return nil
 }
 
-func (impl *userDatabase) All(ctx context.Context) ([]*types.User, error) {
+func (impl *userDatabase) AllUsers(ctx context.Context) ([]*types.User, error) {
 	return nil, nil
 }
 
-// 修改密码
+func (impl *userDatabase) ResetPassword(ctx context.Context, id int64, password string) error {
 
-
-
+	return nil 
+}
 
 

@@ -7,7 +7,7 @@ import (
 	"we-backend/pkg/errno"
 	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
-
+	
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +15,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 
 	var req types.LoginRequest
 	
-	if err := json.NewDecoder(c.Request.Body).Decode(req); err != nil {
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
 		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage(err.Error()))
 		return
 	}

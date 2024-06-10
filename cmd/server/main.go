@@ -1,12 +1,18 @@
 package main
 
 import (
+	"os"
+
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 
 	"we-backend/pkg/config"
 	"we-backend/pkg/di"
 )
 
+func init() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})  // 控制台输出、文件输出	
+}
 
 func main() {
 	

@@ -60,3 +60,18 @@ func Test_raw_reset_password(t *testing.T) {
 func Test_raw_exists(t *testing.T) {
 	
 }
+
+func Test_all_users(t *testing.T) {
+	cfg, _ := config.LoadConfig()
+
+	db := NewRawDatabase(cfg)
+	
+	repo := &userRawDatabase{rawDB: db}
+
+	users, err := repo.AllUsers(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(users)
+}

@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"strings"
-	"we-backend/pkg/types"
 
 	"github.com/go-sql-driver/mysql"
+
+	"we-backend/pkg/types"
 )
 
 
@@ -110,14 +111,21 @@ func (impl *userRawDatabase) Exists(ctx context.Context, id int64) (bool, error)
 }
 
 func (impl *userRawDatabase) Delete(ctx context.Context, id int64) error {
+	tx, err := impl.rawDB.Begin()
+	if err != nil {
+		return err 
+	}
+	defer tx.Rollback()
+
 	stmt := `DELETE FROM users WHERE id = ?`
 
-	_, err := impl.rawDB.Exec(stmt, id)
+	_, err = tx.Exec(stmt, id)
 	if err != nil {
 		return err
 	}
 
-	return nil 
+	err = tx.Commit()
+	return err 
 }
 
 func (impl *userRawDatabase) ResetPassword(ctx context.Context, id int64, password string) error {
@@ -130,4 +138,51 @@ func (impl *userRawDatabase) ResetPassword(ctx context.Context, id int64, passwo
 	}
 
 	return nil
+}
+
+func (impl *userRawDatabase) AllUsers(ctx context.Context) ([]*types.User, error) {
+	query := `
+		SELECT 
+			nickname, email, mobile, password, avatar, intro, created_at, updated_at
+		FROM 
+			users
+		ORDER BY 
+			nickname DESC
+		LIMIT 
+			10`
+
+	rows, err := impl.rawDB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	
+	var users []*types.User
+
+	for rows.Next() {
+		var u types.User
+
+		err := rows.Scan(
+			&u.Nickname,
+			&u.Email,
+			&u.Mobile,
+			&u.Password,
+			&u.Avatar,
+			&u.Intro,
+			&u.CreatedAt,
+			&u.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, &u)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

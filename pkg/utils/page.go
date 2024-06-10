@@ -9,12 +9,12 @@ import (
 
 // Page represents the requested page and rows per page.
 type Page struct {
-	number int
-	rows   int
+	number int  // 当前页码，例如，第 3 页
+	rows   int  // 每页行数，例如，每页 10 行
 }
 
 // Parse parses the strings and validates the values are in reason.
-func Parse(page string, rowsPerPage string) (*Page, error) {
+func ParsePage(page string, rowsPerPage string) (*Page, error) {
 	// 默认值
 	number := 1
 	if page != "" {

@@ -1,8 +1,6 @@
 package api
 
 import (
-	"net/http"
-
 	"we-backend/pkg/api/handler"
 	"we-backend/pkg/api/middleware"
 	"we-backend/pkg/api/routes"
@@ -21,16 +19,16 @@ func NewServerHTTP(cfg *config.Config, userHandler *handler.UserHandler, middlew
 
 	engine := gin.New()
 
-	// no handler
+	// 404
 	engine.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"msg": "404 page not found",
-		})
-	})
-	engine.NoMethod(func(c *gin.Context) {
-		c.Data(http.StatusMethodNotAllowed, "text/plain", []byte("Method Not Allowed"))
+		c.Data(404, "text/plain", []byte("404 page not found"))
 		c.Abort()
 	})
+	engine.NoMethod(func(c *gin.Context) {
+		c.Data(405, "text/plain", []byte("Method Not Allowed"))
+		c.Abort()
+	})
+
 
 	// set up routes
 	routes.UserRoutes(cfg, engine.Group("/api/v1"), userHandler, middleware)

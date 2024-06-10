@@ -15,5 +15,5 @@ type UserRepo interface {
 	Exists(ctx context.Context, id int64) (bool, error) 
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, user types.User) error 
-	All(ctx context.Context) ([]*types.User, error)
+	AllUsers(ctx context.Context) ([]*types.User, error)
 }

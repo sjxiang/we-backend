@@ -1,23 +1,31 @@
 package handler
 
 import (
+	"encoding/json"
+
 	"we-backend/pkg/errno"
 	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
+	"we-backend/pkg/validate"
+
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 )
 
 // 编辑用户信息
 func (h *UserHandler) EditUser(c *gin.Context) {
 	var req types.EditInfoRequest
 
-	validate := validator.New()
-	if err := validate.Struct(&req); err != nil {
-		utils.FeedbackBadRequest(c,errno.ErrInvalidParameter.WithMessage(err.Error()))
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage(err.Error()))
 		return
 	}
+	
+	if err := validate.Check(req); err != nil {
+		utils.FeedbackBadRequest(c, errno.ErrInvalidParameter.WithMessage(err.Error()))
+		return
+	}
+
 
 	utils.FeedbackOK(c, nil)
 }
