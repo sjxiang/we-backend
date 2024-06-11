@@ -3,19 +3,54 @@ package middleware
 import (
 	"errors"
 	"net/http"
-	"os"
+	"fmt"
 	"strings"
-	"time"
 
-	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	authorizationHeaderKey       = "authorization"
+	authorizationTypeBearer      = "bearer"
+	authorizationPayloadIDKey    = "authorization_payload_id"
+	authorizationPayloadEmailKey = "authorization_payload_email"
 )
 
 
 // Authenticate anthn 认证
 func (h *middleware) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		authorizationHeader := c.GetHeader(authorizationHeaderKey)
 
+		if len(authorizationHeader) == 0 {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errors.New("authorization header is not provided"))
+			return
+		}
+
+		fields := strings.Fields(authorizationHeader)
+		if len(fields) < 2 {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errors.New("invalid authorization header format"))
+			return
+		}
+
+		authorizationType := strings.ToLower(fields[0])
+		if authorizationType != authorizationTypeBearer {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, fmt.Errorf("unsupported authorization type %s", authorizationType))
+			return
+		}
+
+		accessToken := fields[1]
+		payload, err := h.tokenService.VerifyToken(accessToken)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, err)
+			return
+		}
+
+		c.Set(authorizationPayloadIDKey, payload.ID)
+		c.Set(authorizationPayloadEmailKey, payload.Email)
+		fmt.Println(payload.ID, payload.Email)
+		
+		c.Next()
 	}
 }
 
@@ -34,113 +69,3 @@ func (mw middleware) RemoteJWTAuth() gin.HandlerFunc {
 }
 
 
-
-
-// kidRaw, exists := token.Header["kid"]
-// if !exists {
-// 	return Claims{}, fmt.Errorf("kid missing from header: %w", err)
-// }
-
-// kid, ok := kidRaw.(string)
-// if !ok {
-// 	return Claims{}, fmt.Errorf("kid malformed: %w", err)  // 畸形
-// }
-
-
-type JwtWrapper struct {
-	ScretKey       string
-	Issuer         string
-	ExpirationTime int64
-}
-
-type JwtClaim struct {
-	UserId   int64
-	Email    string
-	UserType string
-
-	jwt.StandardClaims
-}
-
-// this function will generate a token
-func (j *JwtWrapper) GenrateToken(id int64, email, userType string) (token string, err error) {
-	claims := &JwtClaim{
-		UserId:   id,
-		UserType: userType,
-		Email:    email,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: &jwt.Time{time.Now().Add(time.Hour * time.Duration(j.ExpirationTime))},
-			Issuer:    j.Issuer,
-		},
-	}
-
-	token1 := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err = token1.SignedString([]byte(j.ScretKey))
-	if err != nil {
-		return "", err
-	}
-	return token, nil
-}
-
-// this function will validate a token
-func (j *JwtWrapper) ValidateToken(signedToken string) (claims *JwtClaim, err error) {
-	token, err := jwt.ParseWithClaims(
-		signedToken,
-		&JwtClaim{},
-		func(token *jwt.Token) (interface{}, error) {
-			return []byte(j.ScretKey), nil
-		},
-	)
-	if err != nil {
-		return
-	}
-
-	claims, ok := token.Claims.(*JwtClaim)
-	if !ok {
-		err = errors.New("could not parse claims")
-		return
-	}
-
-	if claims.ExpiresAt.Unix() < time.Now().Local().Unix() {
-		err = errors.New("token is expired")
-		return
-	}
-	return
-}
-
-/*
- *	This function will check the header contains
- *	Authorization or not and valdiating the token
- */
-func Auth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		token := c.Request.Header.Get("Authorization")
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, "you are not authorized")
-			c.Abort()
-			return
-		}
-
-		extractedToken := strings.Split(token, "Bearer ")
-		if len(extractedToken) == 2 {
-			token = strings.TrimSpace(extractedToken[1])
-		} else {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, "you are not authorized")
-			return
-		}
-
-		jwtWrapper := JwtWrapper{
-			ScretKey: os.Getenv("JwtSecrets"),
-			Issuer:   os.Getenv("JwtIssuer"),
-		}
-		claims, err := jwtWrapper.ValidateToken(token)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, "you are not authorized")
-			c.Abort()
-			return
-		}
-		c.Set("user_id", claims.ID)
-		c.Set("email", claims.Email)
-		c.Set("user_type", claims.UserType)
-		c.Next()
-	}
-}

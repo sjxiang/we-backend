@@ -1,58 +1,45 @@
 
 # 健康检查
-curl --location --request GET 'localhost:8000/api/v1/health' 
+curl --location --request GET 'localhost:5678/api/v1/user/health' 
+
 
 # 用户注册
-curl --location --request POST 'localhost:8000/api/v1/user/signup' \
+curl --location --request POST 'localhost:5678/api/v1/user/register' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "email": "1535484943@qq.com",
+    "email": "1535484940@qq.com",
     "password": "123456@qwe",
-    "confirm_password": "123456@qwe"
+    "password_confirm": "123456@qwe"
 }'
 
+
 # 用户登录
-curl --location --request POST 'localhost:8000/api/v1/user/login' \
+curl --location --request POST 'localhost:5678/api/v1/user/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "email": "1535484943@qq.com",
+    "email": "1535484940@qq.com",
     "password": "123456@qwe"
 }'
 
+
 # 用户详情
-
-curl --location --request GET 'localhost:8000/api/v1/authz/me' \
---header 'Cookie: cookie=;_cookie=2; Path=/; Domain=localhost; Max-Age=3600; HttpOnly' \
+curl --location --request GET 'localhost:5678/api/v1/user/me' \
+--header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjgsImVtYWlsIjoiMTUzNTQ4NDk0MEBxcS5jb20iLCJpc3N1ZWRfYXQiOiIyMDI0LTA2LTExVDAxOjQwOjI3Ljg2MDU4NjY2OSswODowMCIsImV4cGlyZWRfYXQiOiIyMDI0LTA2LTE3VDAxOjQwOjI3Ljg2MDU4NjgrMDg6MDAifQ.mmF8PccM4_mk-zA49K7o499OzttKkISsI7Cm-Phz4IY' \
 --header 'User-Agent: Apifox/1.0.0 (https://apifox.com)'
-
-curl --location --request GET 'localhost:8000/api/v1/authz/me' \
---header 'Cookie: cookie=;	_cookie=1; Path=/; Domain=localhost; Max-Age=3600; HttpOnly' 
 
 
 # 编辑用户信息
-
-
-
-# 健康检查接口
-curl --location --request GET 'localhost:2002/api/v1/health' \
---header 'User-Agent: Apifox/1.0.0 (https://apifox.com)'
-
-
-# 验证码接口
-curl --location --request GET 'localhost:2002/api/v1/captcha' \
---header 'User-Agent: Apifox/1.0.0 (https://apifox.com)'
-
-
-# 用户登录接口
-curl --location --request POST 'localhost:2002/api/v1/login' \
---header 'User-Agent: Apifox/1.0.0 (https://apifox.com)' \
+curl --location --request POST 'localhost:5678/api/v1/user/edit' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "image": "2u189g",
-    "captcha_id": "sOYZssO9k3rn0b30RFVG",
-    "username": "admin",
-    "password": "admin123"
+    "email": "1535484940@qq.com",
+    "password": "123456@qwe"
 }'
+
+
+
+
+=============================================================================
 
 
 # *** 岗位 ***

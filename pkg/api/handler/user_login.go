@@ -3,15 +3,16 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"we-backend/pkg/errno"
 	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
-	
+
 	"github.com/gin-gonic/gin"
 )
 
-func (h *UserHandler) Login(c *gin.Context) {
+func (h *handler) Login(c *gin.Context) {
 
 	var req types.LoginRequest
 	
@@ -26,11 +27,13 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.usecase.UserLogin(context.TODO(), &req)
+	fmt.Println(req)
+	
+	rsp, err := h.userUsecase.UserLogin(context.TODO(), &req)
 	if err != nil {
 		utils.FeedbackBadRequest(c, err)
 		return
 	}
 
-	utils.FeedbackOK(c, resp)
+	utils.FeedbackOK(c, rsp.ExportForFeedback())
 }	

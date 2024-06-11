@@ -1,16 +1,32 @@
 package handler
 
 import (
+	"context"
+	"we-backend/pkg/errno"
+	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 查看用户详情
-func (h *UserHandler) Me(c *gin.Context) {
+func (h *handler) Me(c *gin.Context) {
 
-	// userID := c.MustGet(consts.SessionKeyUserId).(int64)
+	userID, err := utils.GetUserIDFromAuth(c)
+	if err != nil {
+		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage("请重新登录"))
+		return
+	}
 
-	
-	utils.FeedbackOK(c, "")
+	req := types.ProfileRequest{
+		UserID: userID,
+	}
+
+	rsp, err := h.userUsecase.UserProfile(context.TODO(), &req)
+	if err != nil {
+		utils.FeedbackBadRequest(c, err)
+		return
+	}
+
+	utils.FeedbackOK(c,  rsp.ExportForFeedback())
 }

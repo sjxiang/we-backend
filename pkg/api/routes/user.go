@@ -3,29 +3,24 @@ package routes
 import (
 	"we-backend/pkg/api/handler"
 	"we-backend/pkg/api/middleware"
-	"we-backend/pkg/config"
-
+	
 	"github.com/gin-gonic/gin"
 )
 
 
-func UserRoutes(cfg *config.Config, apiv1 *gin.RouterGroup, userHandler *handler.UserHandler, middleware middleware.Middleware) {
-
-	// 默认设置 gin.DefaultWriter = os.Stdout、发生 painc 返回一个 500
-	apiv1.Use(gin.Logger(), gin.Logger())
-	// 跨域
-	apiv1.Use(middleware.EnableCORS())
+func UserRoutes(apiv1 *gin.RouterGroup, h handler.Handler, m middleware.Middleware) {
 	
 	userGroup := apiv1.Group("/user")
 	{
-		userGroup.GET("/health", userHandler.HealthCheck)
-		userGroup.POST("/register", userHandler.Register)
-		userGroup.POST("/login", userHandler.Login)
+		userGroup.GET("/health", h.HealthCheck)
+		userGroup.POST("/register", h.Register)
+		userGroup.POST("/login", h.Login)
 		
 		// 了解 gin 注册`中间件和路由`顺序的骚操作
+		userGroup.Use(m.Authenticate())
 		
-		userGroup.GET("/me", userHandler.Me)
-		userGroup.POST("/edit", userHandler.EditUser)
+		userGroup.GET("/me", h.Me)
+		userGroup.POST("/edit", h.EditUser)
 	}
 
 }

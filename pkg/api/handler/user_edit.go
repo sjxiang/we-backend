@@ -13,7 +13,7 @@ import (
 )
 
 // 编辑用户信息
-func (h *UserHandler) EditUser(c *gin.Context) {
+func (h *handler) EditUser(c *gin.Context) {
 	var req types.EditInfoRequest
 
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {

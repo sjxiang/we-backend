@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 
+	"we-backend/pkg/errno"
 	"we-backend/pkg/types"
 )
 
@@ -38,11 +39,11 @@ func (impl *userRawDatabase) Insert(ctx context.Context, user types.User) (int64
 		if errors.As(err, &mysqlError) {
 			switch {
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
-				return 0, ErrDuplicateEntry.WithMessage("邮箱重复")
+				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_mobile"):
-				return 0, ErrDuplicateEntry.WithMessage("手机号重复")
+				return 0, errno.ErrDuplicatedEntry.WithMessage("手机号重复")
 			default:
-				return 0, ErrDuplicateEntry
+				return 0, errno.ErrDuplicatedEntry
 			}
 		}
 		return 0, err
@@ -86,7 +87,7 @@ func (impl *userRawDatabase) FindOne(ctx context.Context, id int64) (*types.User
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrRecordNoFound
+			return nil, errno.ErrRecordNoFound
 		} else {
 			return nil, err
 		}
@@ -141,6 +142,7 @@ func (impl *userRawDatabase) ResetPassword(ctx context.Context, id int64, passwo
 }
 
 func (impl *userRawDatabase) AllUsers(ctx context.Context) ([]*types.User, error) {
+	
 	query := `
 		SELECT 
 			nickname, email, mobile, password, avatar, intro, created_at, updated_at
@@ -157,7 +159,7 @@ func (impl *userRawDatabase) AllUsers(ctx context.Context) ([]*types.User, error
 	}
 	defer rows.Close()
 
-	
+
 	var users []*types.User
 
 	for rows.Next() {

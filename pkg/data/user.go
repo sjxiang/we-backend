@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	"we-backend/pkg/biz"
+	"we-backend/pkg/errno"
 	"we-backend/pkg/types"
 )
 
@@ -31,11 +32,11 @@ func (impl *userDatabase) Insert(ctx context.Context, user types.User) (int64, e
 		if errors.As(err, &mysqlError) {
 			switch {
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
-				return 0, ErrDuplicateEntry.WithMessage("邮箱重复")
+				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_mobile"):
-				return 0, ErrDuplicateEntry.WithMessage("手机号重复")
+				return 0, errno.ErrDuplicatedEntry.WithMessage("手机号重复")
 			default:
-				return 0, ErrDuplicateEntry
+				return 0, errno.ErrDuplicatedEntry
 			}
 		}
 
@@ -52,7 +53,7 @@ func (impl *userDatabase) FindOne(ctx context.Context, id int64) (*types.User, e
 	if err := impl.db.Table("users").Where("id = ?", id).First(&item).Error; err != nil {
 		switch {
 		case errors.Is(err, gorm.ErrRecordNotFound):
-			return nil, ErrRecordNoFound
+			return nil, errno.ErrRecordNoFound
 		default:
 			return nil, err 
 		}
@@ -68,7 +69,7 @@ func (impl *userDatabase) FindOneByEmail(ctx context.Context, email string) (*ty
 
 	switch err {
 	case gorm.ErrRecordNotFound:
-		return nil, ErrRecordNoFound
+		return nil, errno.ErrRecordNoFound
 	case nil:
 		return &item, nil
 	default:
@@ -82,7 +83,7 @@ func (impl *userDatabase) FindOneByMobile(ctx context.Context, mobile string) (*
 	if err := impl.db.Table("users").Where("mobile = ?", mobile).First(&resp).Error; err != nil {
 		switch {
 		case errors.Is(err, gorm.ErrRecordNotFound):
-			return nil, ErrRecordNoFound
+			return nil, errno.ErrRecordNoFound
 		default:
 			return nil, err 
 		}
@@ -112,7 +113,7 @@ func (impl *userDatabase) Delete(ctx context.Context, id int64) error {
 			return err
 		}
 		if !exists {
-			return ErrRecordNoFound
+			return errno.ErrRecordNoFound
 		}
 		
 		if err := tx.Delete(&types.User{}, id).Error; err != nil {

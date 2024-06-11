@@ -16,7 +16,7 @@ type User struct {
 	Intro     string     `gorm:"column:intro"`  
 	Avatar    string     `gorm:"column:avatar"`
 	// YYYY-MM-DD
-	Birthday  time.Time  `gorm:"column:birthday"`
+	Birthday  WrapTime   `gorm:"column:birthday"`
 }
 
 func (u User) TableName() string {

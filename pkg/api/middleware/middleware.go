@@ -16,8 +16,8 @@ type middleware struct {
 	tokenService   token.TokenService
 }
 
-func NewMiddleware() Middleware {
-	return &middleware{}
+func NewMiddleware(tokenService token.TokenService) Middleware {
+	return &middleware{tokenService: tokenService}
 }
 
 // 	ErrNoAuth                 = "请求头中的auth为空"

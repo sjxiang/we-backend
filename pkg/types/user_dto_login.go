@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/mail"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/go-playground/validator/v10"
@@ -78,7 +79,8 @@ var emailDomainWhitelist = []string{
 
 
 type LoginResponse struct {
-
+	AccessToken          string    `json:"access_token"`
+	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
 }
 
 func (x *LoginResponse) ExportForFeedback() *LoginResponse {

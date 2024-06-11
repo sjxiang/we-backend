@@ -7,12 +7,14 @@ import (
 	"we-backend/pkg/biz"
 	"we-backend/pkg/config"
 	"we-backend/pkg/data"
+	"we-backend/pkg/service/token"
 )
 
-func InitializeApi(cfg *config.Config) (*api.ServerHTTP, error) {
+func InitializeApi(cfg *config.Config) (*api.Server, error) {
 	
 	// external service
-	
+	tokenService := token.NewTokenService(cfg)
+
 	// db
 	db := data.NewDB(cfg)
 	
@@ -20,13 +22,13 @@ func InitializeApi(cfg *config.Config) (*api.ServerHTTP, error) {
 	userRepo := data.NewUserRepo(db)
 
 	// usecase
-	userUsecase := biz.NewUserUsecase(userRepo)
+	userUsecase := biz.NewUserUsecase(userRepo, tokenService)
 
 	// handler
-	userHandler := handler.NewUserHandler(userUsecase)
+	handler := handler.NewHandler(userUsecase)
 
 	// middleware
-	middleware := middleware.NewMiddleware()
+	middleware := middleware.NewMiddleware(tokenService)
 
-	return api.NewServerHTTP(cfg, userHandler, middleware), nil 
+	return api.NewServer(cfg, handler, middleware), nil 
 }

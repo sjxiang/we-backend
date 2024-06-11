@@ -23,7 +23,7 @@ func NewPayload(id int64, email string, duration time.Duration) *Payload {
 		ID:        id,
 		Email:     email,
 		IssuedAt:  time.Now(),
-		ExpiredAt: time.Now().Add(duration), 
+		ExpiredAt: time.Now().Add(time.Hour * duration), 
 	}
 	return payload
 }

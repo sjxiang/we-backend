@@ -11,18 +11,17 @@ import (
 var logger *zap.SugaredLogger
 
 func init() {
-	
 
-	logConfig := zap.NewProductionConfig()
+	cfg := zap.NewProductionConfig()
 
-	logConfig.EncoderConfig.EncodeTime = customTimeEncoder
-	logConfig.Level = zap.NewAtomicLevelAt(zapcore.Level(0))
-	logConfig.Encoding                 = "console"  // 编码
-	logConfig.DisableStacktrace        = false      // 打印堆栈
-	logConfig.OutputPaths              = append(logConfig.OutputPaths, "./tmp.log")
-	logConfig.InitialFields            = map[string]interface{}{"service": "we 社区"}
+	cfg.EncoderConfig.EncodeTime = customTimeEncoder
+	cfg.Level                    = zap.NewAtomicLevelAt(zapcore.Level(0))
+	cfg.Encoding                 = "console"  // 编码
+	cfg.DisableStacktrace        = false      // 打印堆栈
+	cfg.OutputPaths              = append(cfg.OutputPaths, "./tmp.log")
+	cfg.InitialFields            = map[string]interface{}{"service": "we 社区"}
 
-	baseLogger, err := logConfig.Build()
+	baseLogger, err := cfg.Build()
 	if err != nil {
 		panic("failed to create the default logger: " + err.Error())
 	}

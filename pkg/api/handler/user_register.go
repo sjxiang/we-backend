@@ -13,7 +13,7 @@ import (
 )
 
 
-func (h *UserHandler) Register(c *gin.Context) {
+func (h *handler) Register(c *gin.Context) {
 	var req types.RegisterRequest
 	
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
@@ -32,11 +32,11 @@ func (h *UserHandler) Register(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.usecase.UserRegister(context.Background(), &req)
+	rsp, err := h.userUsecase.UserRegister(context.Background(), &req)
 	if err != nil {
 		utils.FeedbackBadRequest(c, err)
 		return
 	}
 
-	utils.FeedbackOK(c, resp)
+	utils.FeedbackOK(c, rsp)
 }

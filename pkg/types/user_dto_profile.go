@@ -1,6 +1,5 @@
 package types
 
-
 // type RegisterRequest struct {
 // 	Email           string   `json:"email"            validate:"required,email"         binding:"required,email"`
 // 	Password        string   `json:"password"         validate:"required,min=8,max=32"  binding:"required,min=8,max=48"`
@@ -142,10 +141,14 @@ package types
 // )
 
 type ProfileRequest struct {
-
+	UserID int64
 }
 
 
 type ProfileResponse struct {
-	
+	User User `json:"user"`
+}
+
+func (x *ProfileResponse) ExportForFeedback() *ProfileResponse {
+	return x
 }

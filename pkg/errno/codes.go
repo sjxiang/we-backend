@@ -9,10 +9,12 @@ const OK uint32 = 200
 const InternalError    uint32 = 100_100  // 异常
 const InvalidParameter uint32 = 100_101
 const MissingParameter uint32 = 100_102
-const DatabaseError    uint32 = 100_103
 
-	
-	
+const DatabaseError       uint32 = 100_200	
+const RecordNoFound       uint32 = 100_201
+const RecordAlreadyExists uint32 = 100_202
+const DuplicatedEntry     uint32 = 100_203
+
 // 用户模块
 const (
 	NotLogin            uint32 = 200_100
@@ -32,7 +34,11 @@ var (
 	ErrInternal            = NewErrNo(InternalError, "服务器开小差啦，稍后再来试一试")
 	ErrInvalidParameter    = NewErrNo(InvalidParameter, "参数错误")
 	ErrMissingParameter    = NewErrNo(MissingParameter, "缺少参数")
+	
 	ErrDatabase            = NewErrNo(DatabaseError, "数据库繁忙，请稍后再试")
+	ErrRecordNoFound       = NewErrNo(RecordNoFound, "资源不存在")
+	ErrRecordAlreadyExists = NewErrNo(RecordAlreadyExists, "资源已存在")
+	ErrDuplicatedEntry      = NewErrNo(DuplicatedEntry, "重复条目")  
 	
 
 	// 用户模块
@@ -46,3 +52,5 @@ var (
 )
 
 
+// 注册，用户已注册
+// 登录，用户未注册

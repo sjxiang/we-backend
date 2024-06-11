@@ -1,9 +1,16 @@
 package token
 
+import (
+	"time"
 
-// jwt authz
+	"we-backend/pkg/config"
+)
 
 type TokenService interface {
-	// GenerateToken(req GenerateTokenRequest) (GenerateTokenResponse, error)
-	// VerifyToken(req VerifyTokenRequest) (VerifyTokenResponse, error)
+	CreateToken(id int64, email string, duration time.Duration) (string, *Payload, error)
+	VerifyToken(token string) (*Payload, error)
+}
+
+func NewTokenService(cfg *config.Config) TokenService {
+	return &JWTMaker{cfg.SecretKey}
 }

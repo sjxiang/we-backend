@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-   url := "http://127.0.0.1:8000/api/v1/user/login"
+   url := "http://127.0.0.1:5678/api/v1/user/login"
    method := "POST"
 
    payload := strings.NewReader(`
@@ -36,12 +36,14 @@ func main() {
    }
    defer resp.Body.Close()
 
-   fmt.Printf("%+v\n", resp.Header)
-
+   
    body, err := io.ReadAll(resp.Body)
    if err != nil {
       fmt.Println(err)
       return
    }
+
+   fmt.Println(resp.StatusCode)
+   fmt.Printf("%+v\n", resp.Header)
    fmt.Println(string(body))
 }

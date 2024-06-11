@@ -12,9 +12,15 @@ const (
 	CTX_KEY_EMAIL  = "user_email"
 )
 
+const (
+	authorizationPayloadIDKey    = "authorization_payload_id"
+	authorizationPayloadEmailKey = "authorization_payload_email"
+)
+
+
 
 func GetUserIDFromContext(c *gin.Context) (int64, error) {
-	uidRaw, exists := c.Get(CTX_KEY_USERID)
+	uidRaw, exists := c.Get(authorizationPayloadIDKey)
 	if !exists {
 		return 0, errors.New("kid missing from header")
 	}
@@ -28,15 +34,15 @@ func GetUserIDFromContext(c *gin.Context) (int64, error) {
 }
 
 
-func GetUserIDFromAuth(c *gin.Context) (uint, error) {
+func GetUserIDFromAuth(c *gin.Context) (int64, error) {
 	// get request param
-	userID, ok := c.Get(CTX_KEY_USERID)
+	userID, ok := c.Get(authorizationPayloadIDKey)
 	if !ok {
 		// "auth token invalied, can not fetch user ID in it.")
 		return 0, errors.New("input missing user_id field.")
 	}
 
-	userIDInt, okAssert := userID.(uint)
+	userIDInt, okAssert := userID.(int64)
 	if !okAssert {
 		// "auth token invalied, user ID is not int type in it.")
 		return 0, errors.New("input user_id in wrong format.")
@@ -48,7 +54,7 @@ func GetUserIDFromAuth(c *gin.Context) (uint, error) {
 
 func GetEmailFromAuth(c *gin.Context) (string, error) {
 	// get request param
-	email, ok := c.Get(CTX_KEY_EMAIL)
+	email, ok := c.Get(authorizationPayloadEmailKey)
 	if !ok {
 		// "auth token invalied, can not fetch username in it.")
 		return "", errors.New("input missing email field.")
