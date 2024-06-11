@@ -6,8 +6,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog"
 
-	"we-backend/pkg/config"
-	"we-backend/pkg/di"
+	"we-backend/internal/conf"
+	"we-backend/internal/di"
 )
 
 func init() {
@@ -15,7 +15,7 @@ func init() {
 }
 
 func main() {
-	cfg, err := config.LoadConfig()
+	cfg, err := conf.LoadConfig()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to load the config")
 	}

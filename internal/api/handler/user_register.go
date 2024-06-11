@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/gin-gonic/gin"
+
+	"we-backend/internal/types"
 	"we-backend/pkg/errno"
-	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
 	"we-backend/pkg/validate"
-
-	"github.com/gin-gonic/gin"
 )
 
 

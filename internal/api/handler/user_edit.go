@@ -3,17 +3,16 @@ package handler
 import (
 	"encoding/json"
 
+	"github.com/gin-gonic/gin"
+
+	"we-backend/internal/types"
 	"we-backend/pkg/errno"
-	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
 	"we-backend/pkg/validate"
-
-
-	"github.com/gin-gonic/gin"
 )
 
 // 编辑用户信息
-func (h *handler) EditUser(c *gin.Context) {
+func (h *handler) Edit(c *gin.Context) {
 	var req types.EditInfoRequest
 
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {

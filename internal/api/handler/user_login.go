@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"we-backend/pkg/errno"
-	"we-backend/pkg/types"
-	"we-backend/pkg/utils"
-
 	"github.com/gin-gonic/gin"
+
+	"we-backend/internal/types"
+	"we-backend/pkg/errno"
+	"we-backend/pkg/utils"
 )
 
 func (h *handler) Login(c *gin.Context) {

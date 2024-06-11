@@ -1,16 +1,16 @@
 package di
 
 import (
-	"we-backend/pkg/api"
-	"we-backend/pkg/api/handler"
-	"we-backend/pkg/api/middleware"
-	"we-backend/pkg/biz"
-	"we-backend/pkg/config"
-	"we-backend/pkg/data"
-	"we-backend/pkg/service/token"
+	"we-backend/internal/api"
+	"we-backend/internal/api/handler"
+	"we-backend/internal/api/middleware"
+	"we-backend/internal/biz"
+	"we-backend/internal/conf"
+	"we-backend/internal/data"
+	"we-backend/internal/service/token"
 )
 
-func InitializeApi(cfg *config.Config) (*api.Server, error) {
+func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 	
 	// external service
 	tokenService := token.NewTokenService(cfg)

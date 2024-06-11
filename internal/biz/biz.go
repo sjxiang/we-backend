@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"we-backend/pkg/types"
+	"we-backend/internal/types"
 )
 
 

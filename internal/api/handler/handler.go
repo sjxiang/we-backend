@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"we-backend/pkg/biz"
+	"we-backend/internal/biz"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,5 +23,5 @@ type Handler interface {
 	Register(c *gin.Context) 
 	Login(c *gin.Context)
 	Me(c *gin.Context)
-	EditUser(c *gin.Context)
+	Edit(c *gin.Context)
 }

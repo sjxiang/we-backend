@@ -2,7 +2,8 @@ package validate
 
 import (
 	"testing"
-	"we-backend/pkg/types"
+	
+	"we-backend/internal/types"
 )
 
 func Test_check(t *testing.T) {

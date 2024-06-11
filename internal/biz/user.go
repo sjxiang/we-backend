@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"we-backend/pkg/errno"
-	"we-backend/pkg/service/token"
-	"we-backend/pkg/types"
 	"we-backend/pkg/utils"
-
+	"we-backend/internal/service/token"
+	"we-backend/internal/types"
+	
 	"golang.org/x/crypto/bcrypt"
 )
 

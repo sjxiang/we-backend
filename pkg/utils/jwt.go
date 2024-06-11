@@ -19,7 +19,7 @@ type Auth2Claims struct {
 }
 
 /*
-
+   
 type Claims interface {
 	GetExpirationTime() (*NumericDate, error)
 	GetIssuedAt() (*NumericDate, error)

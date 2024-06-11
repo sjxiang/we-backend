@@ -15,7 +15,7 @@ func (h *middleware) EnableCORS() gin.HandlerFunc {
 	
 	cfg := cors.DefaultConfig()
 
-	cfg.AllowMethods     = []string{"GET", "POST"}
+	cfg.AllowMethods     = []string{"GET", "POST", "PATCH", "PUT", "DELETE"}
 	cfg.AllowHeaders     = []string{"*"}  // e.g. "Authorization"
 	cfg.ExposeHeaders    = []string{"*"}
 	cfg.AllowCredentials = true

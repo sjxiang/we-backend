@@ -3,7 +3,7 @@ package token
 import (
 	"time"
 
-	"we-backend/pkg/config"
+	"we-backend/internal/conf"
 )
 
 type TokenService interface {
@@ -11,6 +11,6 @@ type TokenService interface {
 	VerifyToken(token string) (*Payload, error)
 }
 
-func NewTokenService(cfg *config.Config) TokenService {
+func NewTokenService(cfg *conf.Config) TokenService {
 	return &JWTMaker{cfg.SecretKey}
 }

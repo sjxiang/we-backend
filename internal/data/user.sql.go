@@ -9,7 +9,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 
 	"we-backend/pkg/errno"
-	"we-backend/pkg/types"
+	"we-backend/internal/types"
 )
 
 

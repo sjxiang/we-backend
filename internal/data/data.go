@@ -4,18 +4,18 @@ import (
 	"context"
 	"database/sql"
 
-	"we-backend/pkg/config"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"we-backend/internal/conf"
 )
 
 
-func NewDB(cfg *config.Config) *gorm.DB {
+func NewDB(cfg *conf.Config) *gorm.DB {
 	
 	dsn := cfg.GetMySQLDefaultDSN()
 
@@ -44,7 +44,7 @@ func NewDB(cfg *config.Config) *gorm.DB {
 	return database
 }
 
-func NewCache(cfg *config.Config) *redis.Client {
+func NewCache(cfg *conf.Config) *redis.Client {
 	
 	addr := cfg.GetRedisAddr()
 
@@ -64,7 +64,7 @@ func NewCache(cfg *config.Config) *redis.Client {
 
 
 // mysql <raw sql>
-func NewRawDatabase(cfg *config.Config) *sql.DB {
+func NewRawDatabase(cfg *conf.Config) *sql.DB {
 	connection, err := openDB(cfg.GetMySQLDefaultDSN())
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot connect to raw database")

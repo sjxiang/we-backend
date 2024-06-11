@@ -8,9 +8,9 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 
-	"we-backend/pkg/biz"
+	"we-backend/internal/biz"
+	"we-backend/internal/types"
 	"we-backend/pkg/errno"
-	"we-backend/pkg/types"
 )
 
 
@@ -137,8 +137,40 @@ func (impl *userDatabase) AllUsers(ctx context.Context) ([]*types.User, error) {
 }
 
 func (impl *userDatabase) ResetPassword(ctx context.Context, id int64, password string) error {
-
+	
 	return nil 
 }
 
 
+// func (c CachedProductQuery) GetById(productId int) (product Product, err error) {
+// 	cacheKey := fmt.Sprintf("%s_%s_%d", c.prefix, "product_by_id", productId)
+// 	cachedResult := c.cacheClient.Get(c.productQuery.ctx, cacheKey)
+
+// 	err = func() error {
+// 		err1 := cachedResult.Err()
+// 		if err1 != nil {
+// 			return err1
+// 		}
+// 		cachedResultByte, err2 := cachedResult.Bytes()
+// 		if err2 != nil {
+// 			return err2
+// 		}
+// 		err3 := json.Unmarshal(cachedResultByte, &product)
+// 		if err3 != nil {
+// 			return err3
+// 		}
+// 		return nil
+// 	}()
+// 	if err != nil {
+// 		product, err = c.productQuery.GetById(productId)
+// 		if err != nil {
+// 			return Product{}, err
+// 		}
+// 		encoded, err := json.Marshal(product)
+// 		if err != nil {
+// 			return product, nil
+// 		}
+// 		_ = c.cacheClient.Set(c.productQuery.ctx, cacheKey, encoded, time.Hour)
+// 	}
+// 	return
+// }

@@ -3,14 +3,15 @@ package data
 import (
 	"context"
 	"testing"
-	"we-backend/pkg/config"
-	"we-backend/pkg/types"
-
+	
 	"golang.org/x/crypto/bcrypt"
+
+	"we-backend/internal/conf"
+	"we-backend/internal/types"
 )
 
 func Test_raw_insert_user(t *testing.T) {
-	cfg, _ := config.LoadConfig()
+	cfg, _ := conf.LoadConfig()
 
 	db := NewRawDatabase(cfg)
 	
@@ -41,7 +42,7 @@ func Test_raw_find_one_by_email(t *testing.T) {
 }
 
 func Test_raw_delete_user(t *testing.T) {
-	cfg, _ := config.LoadConfig()
+	cfg, _ := conf.LoadConfig()
 
 	db := NewRawDatabase(cfg)
 	
@@ -62,7 +63,7 @@ func Test_raw_exists(t *testing.T) {
 }
 
 func Test_all_users(t *testing.T) {
-	cfg, _ := config.LoadConfig()
+	cfg, _ := conf.LoadConfig()
 
 	db := NewRawDatabase(cfg)
 	

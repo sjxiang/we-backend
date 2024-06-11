@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
-	"we-backend/pkg/service/token"
+	"we-backend/internal/service/token"
 )
 
 

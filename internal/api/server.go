@@ -1,21 +1,21 @@
 package api
 
 import (
-	"we-backend/pkg/api/handler"
-	"we-backend/pkg/api/middleware"
-	"we-backend/pkg/api/routes"
-	"we-backend/pkg/config"
-
 	"github.com/gin-gonic/gin"
+
+	"we-backend/internal/api/handler"
+	"we-backend/internal/api/middleware"
+	"we-backend/internal/api/routes"
+	"we-backend/internal/conf"
 )
 
 
 type Server struct {
 	engine *gin.Engine
-	cfg    *config.Config
+	cfg    *conf.Config
 }
 
-func NewServer(cfg *config.Config, h handler.Handler, m middleware.Middleware) *Server {
+func NewServer(cfg *conf.Config, h handler.Handler, m middleware.Middleware) *Server {
 
 	server := Server{
 		engine: gin.New(),
@@ -47,8 +47,5 @@ func (s *Server) routes(h handler.Handler, m middleware.Middleware) {
 	// 默认设置 gin.DefaultWriter = os.Stdout、发生 painc 返回一个 500、跨域
 	s.engine.Use(gin.Logger(), gin.Recovery(), m.EnableCORS())
 
-	apiv1 := s.engine.Group("/api/v1")
-
-		
-	routes.UserRoutes(apiv1, h, m)
+	routes.UserRoutes(s.engine.Group("/api/v1/user"), h, m)
 }
