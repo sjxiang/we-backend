@@ -7,17 +7,20 @@ import (
 	"we-backend/internal/biz"
 	"we-backend/internal/conf"
 	"we-backend/internal/data"
+	"we-backend/internal/service/limiter"
 	"we-backend/internal/service/token"
 )
 
 func InitializeApi(cfg *conf.Config) (*api.Server, error) {
-	
-	// external service
-	tokenService := token.NewTokenService(cfg)
 
 	// db
 	db := data.NewDB(cfg)
+	cache := data.NewCache(cfg)
 	
+	// external service
+	tokenService := token.NewTokenService(cfg)
+	rateLimitService := limiter.NewRateLimitService(cache, cfg)
+
 	// repository
 	userRepo := data.NewUserRepo(db)
 
@@ -28,7 +31,7 @@ func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 	handler := handler.NewHandler(userUsecase)
 
 	// middleware
-	middleware := middleware.NewMiddleware(tokenService)
+	middleware := middleware.NewMiddleware(tokenService, rateLimitService)
 
 	return api.NewServer(cfg, handler, middleware), nil 
 }

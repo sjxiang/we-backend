@@ -32,6 +32,9 @@ type Config struct {
 
 	JWTIssuer              string 
 	JWTExpirationTime      int64  
+
+	LimitInternal          int64  // 一秒内上限 100 个请求
+	LimitRate              int64  
 }
 
 
@@ -56,6 +59,9 @@ func LoadConfig() (config *Config, err error) {
 	
 	cfg.JWTIssuer         = "we"
 	cfg.JWTExpirationTime = 30 * 86400
+	
+	cfg.LimitInternal     = 1
+	cfg.LimitRate         = 100
 	
 	return cfg, nil
 }

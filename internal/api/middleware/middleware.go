@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
+	"we-backend/internal/service/limiter"
 	"we-backend/internal/service/token"
 )
 
@@ -10,14 +11,19 @@ import (
 type Middleware interface {
 	Authenticate() gin.HandlerFunc
 	EnableCORS() gin.HandlerFunc
+	RateLimit() gin.HandlerFunc 
 }
 
 type middleware struct {
-	tokenService   token.TokenService
+	tokenService     token.TokenService
+	rateLimitService limiter.RateLimitService
 }
 
-func NewMiddleware(tokenService token.TokenService) Middleware {
-	return &middleware{tokenService: tokenService}
+func NewMiddleware(tokenService token.TokenService, rateLimitService limiter.RateLimitService) Middleware {
+	return &middleware{
+		tokenService:     tokenService,
+		rateLimitService: rateLimitService,
+	}
 }
 
 // 	ErrNoAuth                 = "请求头中的auth为空"

@@ -68,11 +68,3 @@ func (mw middleware) Authorize() gin.HandlerFunc {
 		
 	}
 }
-
-func (mw middleware) RemoteJWTAuth() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		
-	}
-}
-
-

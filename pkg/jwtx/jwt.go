@@ -18,20 +18,6 @@ type Auth2Claims struct {
 	UserAgent string
 }
 
-/*
-   
-type Claims interface {
-	GetExpirationTime() (*NumericDate, error)
-	GetIssuedAt() (*NumericDate, error)
-	GetNotBefore() (*NumericDate, error)
-	GetIssuer() (string, error)
-	GetSubject() (string, error)
-	GetAudience() (ClaimStrings, error)
-}
-
-v5 需要实现这些
-
-*/
 
 
 // 生成 
@@ -68,12 +54,12 @@ func ExtractAuth2Token(accessToken, secretKey string) (*Auth2Claims, error) {
 
 	token, err := jwt.ParseWithClaims(accessToken, &Auth2Claims{}, keyFunc)
 	if err != nil {
-		return nil, err  // 内容被篡改（签名和密钥对不上）
+		return nil, err  // 内容被篡改（签名和密钥对不上）、过期
 	}
 
 	claims, ok := token.Claims.(*Auth2Claims)
 	if !(ok && token.Valid) {
-		return nil, err  // 类型断言、过期
+		return nil, err  // 类型断言
 	}
 
 	return claims, nil

@@ -8,14 +8,12 @@ type User struct {
 	ID        int64      `gorm:"column:id"`     
 	CreatedAt time.Time  `gorm:"column:created_at"`
 	UpdatedAt time.Time  `gorm:"column:updated_at"`
-
 	Email     string     `gorm:"column:email"`  
 	Password  string     `gorm:"column:password"`     
 	Nickname  string     `gorm:"column:nickname"`
 	Mobile    string     `gorm:"column:mobile"`   
 	Intro     string     `gorm:"column:intro"`  
 	Avatar    string     `gorm:"column:avatar"`
-	// YYYY-MM-DD
 	Birthday  WrapTime   `gorm:"column:birthday"`
 }
 
@@ -25,8 +23,7 @@ func (u User) TableName() string {
 
 // TodayIsBirthday 判定今天是不是我的生日
 func (u User) TodayIsBirthday() bool {
-	now := time.Now()
-	return now.Month() == u.Birthday.Month() && now.Day() == u.Birthday.Day()
+	return time.Now().Month() == u.Birthday.Month() && time.Now().Day() == u.Birthday.Day()
 }
 
 // type UserM struct {
@@ -56,9 +53,5 @@ func (u User) TodayIsBirthday() bool {
 // 	UpdatedAt int64				`gorm:"column:updated_at;not null"`
 
 // 	DeletedAt gorm.DeletedAt    `gorm:"index"`
-// }
-
-// func (u *UserM) TableName() string {
-// 	return consts.TABLE_NAME_USER
 // }
 

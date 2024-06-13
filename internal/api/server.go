@@ -44,8 +44,8 @@ func (s *Server) routes(h handler.Handler, m middleware.Middleware) {
 		c.Abort()
 	})
 	
-	// 默认设置 gin.DefaultWriter = os.Stdout、发生 painc 返回一个 500、跨域
-	s.engine.Use(gin.Logger(), gin.Recovery(), m.EnableCORS())
+	// 默认设置 gin.DefaultWriter = os.Stdout、发生 painc 返回一个 500、跨域、滑动窗口限流
+	s.engine.Use(gin.Logger(), gin.Recovery(), m.EnableCORS(), m.RateLimit())
 
 	routes.UserRoutes(s.engine.Group("/api/v1/user"), h, m)
 }
