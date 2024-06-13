@@ -24,7 +24,8 @@ func NewUserUsecase(userRepo UserRepo, tokenService token.TokenService) *UserUse
 }
 
 func (uc *UserUsecase) UserRegister(ctx context.Context, req *types.RegisterRequest) (*types.RegisterResponse, error) {
-
+	
+	// 密码哈希
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, errors.New("failed to hash password")
@@ -35,6 +36,7 @@ func (uc *UserUsecase) UserRegister(ctx context.Context, req *types.RegisterRequ
 		Password: string(hashedPassword),
 	}
 
+	// 插入用户数据
 	id, err := uc.userRepo.Insert(ctx, newUser)
 	if err != nil {
 		return nil, err 
@@ -49,23 +51,23 @@ func (uc *UserUsecase) UserRegister(ctx context.Context, req *types.RegisterRequ
 
 
 func (uc *UserUsecase) UserLogin(ctx context.Context, req *types.LoginRequest) (*types.LoginResponse, error) {
+	
+	// 通过邮箱检索用户
 	user, err := uc.userRepo.FindOneByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, err
 	}
 
+	// 密码校验
 	if valid, err := utils.PasswordMatches(user.Password, req.Password); err != nil || !valid {
 		return nil, errno.ErrInvalidCredentials
 	}
 
-	fmt.Println(user)
+	// 签发 token
 	accessToken, accessPayload, err := uc.tokenService.CreateToken(user.ID, user.Email, time.Duration(144))
 	if err != nil {
 		return nil, err 
 	}
-
-	fmt.Println(accessToken)
-	fmt.Println(accessPayload)
 
 	rsp := &types.LoginResponse{
 		AccessToken:          accessToken,
@@ -81,8 +83,6 @@ func (uc *UserUsecase) UserProfile(ctx context.Context, req *types.ProfileReques
 		return nil, err
 	}
 
-	fmt.Println(user)
-
 	rsp := &types.ProfileResponse{
 		User: *user,
 	}
@@ -91,7 +91,7 @@ func (uc *UserUsecase) UserProfile(ctx context.Context, req *types.ProfileReques
 	return rsp, nil 
 }
 
-func (uc *UserUsecase) UserEditInfo(ctx context.Context, req *types.EditInfoRequest) (*types.EditInfoResponse, error) {
+func (uc *UserUsecase) UserEditInfo(ctx context.Context, req *types.EditRequest) (*types.EditResponse, error) {
 
 	return nil, nil 
 }

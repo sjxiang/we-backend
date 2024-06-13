@@ -14,7 +14,7 @@ var (
 type Payload struct {
 	ID        int64     `json:"id"`
 	Email     string    `json:"email"`
-	IssuedAt  time.Time `json:"issued_at"`   // 签发 YY-MM-DD 
+	IssuedAt  time.Time `json:"issued_at"`   // 签发 YYYY-MM-DD 
 	ExpiredAt time.Time `json:"expired_at"`  // 截至
 }
 

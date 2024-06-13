@@ -1,5 +1,4 @@
-package utils
-
+package logger
 
 import (
 	"time"

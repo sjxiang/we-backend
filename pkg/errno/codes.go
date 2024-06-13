@@ -15,12 +15,12 @@ const RecordNoFound       uint32 = 100_201
 const RecordAlreadyExists uint32 = 100_202
 const DuplicatedEntry     uint32 = 100_203
 
+
 // 用户模块
 const (
 	NotLogin            uint32 = 200_100
 	InvalidCredentials  uint32 = 200_101
-	AuthorizationFailed uint32 = 200_102
-	AccessDenied        uint32 = 200_103
+	AccessDenied        uint32 = 200_102
 
 	InvalidToken        uint32 = 200_200
 	ExpiredToken        uint32 = 200_201
@@ -32,22 +32,21 @@ var (
 	Success                = NewErrNo(OK, "成功")
 
 	ErrInternal            = NewErrNo(InternalError, "服务器开小差啦，稍后再来试一试")
-	ErrInvalidParameter    = NewErrNo(InvalidParameter, "参数错误")
 	ErrMissingParameter    = NewErrNo(MissingParameter, "缺少参数")
+	ErrInvalidParameter    = NewErrNo(InvalidParameter, "参数错误")
 	
 	ErrDatabase            = NewErrNo(DatabaseError, "数据库繁忙，请稍后再试")
 	ErrRecordNoFound       = NewErrNo(RecordNoFound, "资源不存在")
 	ErrRecordAlreadyExists = NewErrNo(RecordAlreadyExists, "资源已存在")
-	ErrDuplicatedEntry      = NewErrNo(DuplicatedEntry, "重复条目")  
+	ErrDuplicatedEntry     = NewErrNo(DuplicatedEntry, "重复条目")  
 	
 
 	// 用户模块
-	ErrNotLogin            = NewErrNo(NotLogin, "未登录")
-	ErrInvalidCredentials  = NewErrNo(InvalidCredentials, "用户名或密码不正确，请重新输入")
-	ErrAuthorizationFailed = NewErrNo(AuthorizationFailed, "JWT 认证失败，请稍后重试")
-	ErrAccessDenied        = NewErrNo(AccessDenied, "无权限")
+	ErrNotLogin            = NewErrNo(NotLogin, "用户未登录")
+	ErrInvalidCredentials  = NewErrNo(InvalidCredentials, "用户名错误或者密码不正确，请重新输入")
+	ErrAccessDenied        = NewErrNo(AccessDenied, "用户无权限")
 
-	ErrInvalidToken        = NewErrNo(InvalidToken, "token 无效")
+	ErrInvalidToken        = NewErrNo(InvalidToken, "token 无效，请重新登录")
 	ErrExpiredToken        = NewErrNo(ExpiredToken, "token 过期，请重新登录")
 )
 

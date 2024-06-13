@@ -28,7 +28,7 @@ func (h *handler) Register(c *gin.Context) {
 
 	minSize, digit, special, letter := utils.ValidatePassword(req.Password)
 	if !minSize || !digit || !special || !letter {
-		utils.FeedbackBadRequest(c, errno.ErrInvalidParameter.WithMessage("密码必须包含数字（123...）、字母（aA...）、特殊字符（@#$...），并且长度不能小于 8 位"))
+		utils.FeedbackBadRequest(c, errno.ErrInvalidParameter.WithMessage("这个密码太弱了，不少于8个字符，必须包含大写和小写字母、数字以及特殊符号"))
 		return
 	}
 

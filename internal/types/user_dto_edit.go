@@ -2,11 +2,11 @@ package types
 
 
 
-type EditInfoRequest struct {
+type EditRequest struct {
 
 }
 
 
-type EditInfoResponse struct {
+type EditResponse struct {
 	
 }

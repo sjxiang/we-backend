@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"unicode"
 	"regexp"
+	"unicode"
+	"unicode/utf8"
 )
-
 
 // 校验密码组成，组合（数字 + 字母 + 特殊字符）
 func ValidatePassword(password string) (minSize, digit, special, letter bool) {
@@ -21,7 +21,9 @@ func ValidatePassword(password string) (minSize, digit, special, letter bool) {
 			special = true
 		}
 	}
-	minSize = len(password) >= 8
+	
+	// minSize = len(password) >= 8  // len 返回字节长度
+	minSize = utf8.RuneCountInString(password) >= 8  // 返回字符长度
 	return
 }
 

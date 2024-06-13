@@ -84,16 +84,14 @@ func (impl *userRawDatabase) FindOne(ctx context.Context, id int64) (*types.User
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
-
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errno.ErrRecordNoFound
-		} else {
-			return nil, err
-		}
+	switch {
+	case errors.Is(err, sql.ErrNoRows):
+		return nil, errno.ErrRecordNoFound
+	case err != nil :
+		return nil, err
+	default:
+		return &user, nil 
 	}
-
-	return &user, nil
 }
 
 func (impl *userRawDatabase) FindOneByEmail(ctx context.Context, email string) (*types.User, error) {

@@ -50,16 +50,16 @@ func (impl *userDatabase) Insert(ctx context.Context, user types.User) (int64, e
 func (impl *userDatabase) FindOne(ctx context.Context, id int64) (*types.User, error) {
 	var item types.User
 
-	if err := impl.db.Table("users").Where("id = ?", id).First(&item).Error; err != nil {
-		switch {
-		case errors.Is(err, gorm.ErrRecordNotFound):
-			return nil, errno.ErrRecordNoFound
-		default:
-			return nil, err 
-		}
-	}
-
-	return &item, nil 
+	err := impl.db.Table("users").Where("id = ?", id).First(&item).Error
+	
+	switch {
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		return nil, errno.ErrRecordNoFound
+	case err != nil:
+		return nil, err
+	default:
+		return &item, nil 
+	} 
 }
 
 func (impl *userDatabase) FindOneByEmail(ctx context.Context, email string) (*types.User, error) {

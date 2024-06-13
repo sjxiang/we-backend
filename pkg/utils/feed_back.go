@@ -8,8 +8,8 @@ import (
 )
 
 type Response struct {
-	Code    uint32      `json:"code"`
-	Message string      `json:"message"`
+	Code    uint32      `json:"code,omitempty"`
+	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
 }
 

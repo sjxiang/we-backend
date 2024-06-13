@@ -13,7 +13,7 @@ import (
 
 // 编辑用户信息
 func (h *handler) Edit(c *gin.Context) {
-	var req types.EditInfoRequest
+	var req types.EditRequest
 
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
 		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage(err.Error()))
@@ -24,7 +24,6 @@ func (h *handler) Edit(c *gin.Context) {
 		utils.FeedbackBadRequest(c, errno.ErrInvalidParameter.WithMessage(err.Error()))
 		return
 	}
-
 
 	utils.FeedbackOK(c, nil)
 }

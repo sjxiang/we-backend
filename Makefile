@@ -36,7 +36,7 @@ test:
 
 
 run:
-	go run ./cmd/server/main.go 
+	go run ./cmd/we/main.go 
 
 
 .PHONY: mysql redis test run

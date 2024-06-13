@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"errors"
-	"net/http"
 	"fmt"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,6 +40,7 @@ func (h *middleware) Authenticate() gin.HandlerFunc {
 			return
 		}
 
+		// 校验 token
 		accessToken := fields[1]
 		payload, err := h.tokenService.VerifyToken(accessToken)
 		if err != nil {
@@ -46,9 +48,14 @@ func (h *middleware) Authenticate() gin.HandlerFunc {
 			return
 		}
 
+		// 会话保持
+		if time.Until(payload.ExpiredAt) < time.Minute * time.Duration(30)  {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errors.New("时间差不多喽"))  // 考虑再续一轮
+			return
+		}
+
 		c.Set(authorizationPayloadIDKey, payload.ID)
 		c.Set(authorizationPayloadEmailKey, payload.Email)
-		fmt.Println(payload.ID, payload.Email)
 		
 		c.Next()
 	}
