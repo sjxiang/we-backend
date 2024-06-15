@@ -39,3 +39,13 @@ func FeedbackInternalServerError(c *gin.Context, err error) {
 		Message: e.ErrMsg,
 	})
 }
+
+
+func FeedbackAuthorizedFailedError(c *gin.Context, err error) {
+	e := errno.ConvertErr(err)
+
+	c.AbortWithStatusJSON(http.StatusUnauthorized, Response{
+		Code:    e.ErrCode,
+		Message: e.ErrMsg,
+	})
+}

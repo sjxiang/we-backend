@@ -60,8 +60,8 @@ func LoadConfig() (config *Config, err error) {
 	cfg.JWTIssuer         = "we"
 	cfg.JWTExpirationTime = 30 * 86400
 	
-	cfg.LimitInternal     = 1
-	cfg.LimitRate         = 100
+	cfg.LimitInternal     = 60
+	cfg.LimitRate         = 5
 	
 	return cfg, nil
 }

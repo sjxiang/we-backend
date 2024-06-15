@@ -33,8 +33,6 @@ func (impl *userDatabase) Insert(ctx context.Context, user types.User) (int64, e
 			switch {
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
 				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
-			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_mobile"):
-				return 0, errno.ErrDuplicatedEntry.WithMessage("手机号重复")
 			default:
 				return 0, errno.ErrDuplicatedEntry
 			}
@@ -128,8 +126,20 @@ func (impl *userDatabase) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
+
+
+
 func (impl *userDatabase) Update(ctx context.Context, user types.User) error {
-	return nil
+	// 这种写法依赖于 GORM 的零值和主键更新特性
+	// Update 非零值 WHERE id = ?
+	
+	return impl.db.Table("users").Where("id = ?", user.ID).
+		Updates(map[string]any{
+			"nickname": user.Nickname,
+			"avatar":   user.Avatar,
+			"intro":    user.Avatar,
+			"birthday": user.Birthday,
+	}).Error
 }
 
 func (impl *userDatabase) AllUsers(ctx context.Context) ([]*types.User, error) {

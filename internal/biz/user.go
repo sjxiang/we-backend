@@ -3,7 +3,6 @@ package biz
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"we-backend/pkg/errno"
@@ -84,14 +83,21 @@ func (uc *UserUsecase) UserProfile(ctx context.Context, req *types.ProfileReques
 	}
 
 	rsp := &types.ProfileResponse{
-		User: *user,
+		Profile: types.ExportUserForFeedback(user),
 	}
-	fmt.Println(rsp)
 
 	return rsp, nil 
 }
 
-func (uc *UserUsecase) UserEditInfo(ctx context.Context, req *types.EditRequest) (*types.EditResponse, error) {
+func (uc *UserUsecase) UserEditInfo(ctx context.Context, arg *types.EditParam) error {
+	
+	newUser := types.User{
+		ID:       arg.UserID,
+		Nickname: arg.Nickname,
+		Avatar:   arg.Avatar,
+		Intro:    arg.Intro,
+		Birthday: arg.Birthday, 
+	}
 
-	return nil, nil 
+	return uc.userRepo.Update(ctx, newUser)
 }

@@ -40,8 +40,6 @@ func (impl *userRawDatabase) Insert(ctx context.Context, user types.User) (int64
 			switch {
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
 				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
-			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_mobile"):
-				return 0, errno.ErrDuplicatedEntry.WithMessage("手机号重复")
 			default:
 				return 0, errno.ErrDuplicatedEntry
 			}

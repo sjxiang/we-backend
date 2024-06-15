@@ -7,10 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	CTX_KEY_USERID = "user_id"
-	CTX_KEY_EMAIL  = "user_email"
-)
 
 const (
 	authorizationPayloadIDKey    = "authorization_payload_id"

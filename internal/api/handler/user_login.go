@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 
@@ -27,8 +26,6 @@ func (h *handler) Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(req)
-	
 	rsp, err := h.userUsecase.UserLogin(context.TODO(), &req)
 	if err != nil {
 		utils.FeedbackBadRequest(c, err)

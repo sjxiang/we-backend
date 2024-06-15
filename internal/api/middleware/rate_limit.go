@@ -3,22 +3,33 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"context"
 
 	"github.com/gin-gonic/gin"
 )
 
 
-// 限流
+// 滑动窗口限流
 func (h *middleware) RateLimit() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		
-		over , err := h.rateLimitService.Limit(c, fmt.Sprintf("request_ip:%s", c.RemoteIP()))
-		if err != nil {
-			c.AbortWithStatus(http.StatusInternalServerError)  // redis 被打崩了
+		if c.GetHeader("x-stress") == "true" {
+			
+			// 把压测标签 tag 带进 ctx
+			newCtx := context.WithValue(c, StressKey, true)
+			c.Request = c.Request.Clone(newCtx)
+			c.Next()
+
 			return
 		}
 
-		if !over {
+		over , err := h.accessControlService.Limit(c, fmt.Sprintf("request_ip:%s", c.RemoteIP()))
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)  // redis 被打崩了，那就别玩了
+			return
+		}
+
+		if over {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"msg": "请求过载，请稍后重试"})
 			return 
 		}
@@ -26,4 +37,12 @@ func (h *middleware) RateLimit() gin.HandlerFunc {
 		c.Next()
 	}	
 }
+
+
+type ctxKey string
+
+const (
+	StressKey ctxKey = "x-stress"
+)
+
 

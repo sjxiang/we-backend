@@ -22,10 +22,9 @@ CREATE TABLE `users` (
     `password`     varchar(64)   NOT NULL DEFAULT ''                COMMENT '密码',
     `intro`        varchar(1024) NOT NULL DEFAULT ''                COMMENT '自我介绍',
     `avatar`       varchar(1024) NOT NULL DEFAULT ''                COMMENT '头像',
-    `birthday`     datetime(3)            DEFAULT NULL              COMMENT '生日',
+    `birthday`     bigint(20)    NOT NULL DEFAULT '0'               COMMENT '生日',
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `uk_email`(`email`) USING BTREE,
-    UNIQUE INDEX `uk_mobile`(`mobile`) USING BTREE
+    UNIQUE INDEX `uk_email`(`email`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户信息表';
 
 

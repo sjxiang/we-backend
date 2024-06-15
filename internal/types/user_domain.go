@@ -14,7 +14,7 @@ type User struct {
 	Mobile    string     `gorm:"column:mobile"`   
 	Intro     string     `gorm:"column:intro"`  
 	Avatar    string     `gorm:"column:avatar"`
-	Birthday  WrapTime   `gorm:"column:birthday"`
+	Birthday  int64      `gorm:"column:birthday"` // YYYY-MM-DD
 }
 
 func (u User) TableName() string {
@@ -23,8 +23,10 @@ func (u User) TableName() string {
 
 // TodayIsBirthday 判定今天是不是我的生日
 func (u User) TodayIsBirthday() bool {
-	return time.Now().Month() == u.Birthday.Month() && time.Now().Day() == u.Birthday.Day()
+	birth := time.Unix(u.Birthday, 0)
+	return time.Now().Month() == birth.Month() && time.Now().Day() == birth.Day()
 }
+
 
 // type UserM struct {
 // 	// 自增主键

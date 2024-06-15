@@ -29,5 +29,5 @@ func (h *handler) Me(c *gin.Context) {
 		return
 	}
 
-	utils.FeedbackOK(c,  rsp.ExportForFeedback())
+	utils.FeedbackOK(c,  rsp)
 }

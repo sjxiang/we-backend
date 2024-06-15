@@ -61,7 +61,6 @@ func ExtractAuth2Token(accessToken, secretKey string) (*Auth2Claims, error) {
 	if !(ok && token.Valid) {
 		return nil, err  // 类型断言
 	}
-
+	
 	return claims, nil
 }
-
