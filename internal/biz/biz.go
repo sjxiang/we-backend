@@ -17,3 +17,10 @@ type UserRepo interface {
 	Update(ctx context.Context, user types.User) error 
 	AllUsers(ctx context.Context) ([]*types.User, error)
 }
+
+
+type UserCache interface {
+	Get(ctx context.Context, id int64) (*types.User, error)
+	Set(ctx context.Context, user types.User) error
+	Del(ctx context.Context, id int64) error
+}

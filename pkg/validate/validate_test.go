@@ -6,7 +6,8 @@ import (
 	"we-backend/internal/types"
 )
 
-func Test_check(t *testing.T) {
+func Test_validate(t *testing.T) {
+	
 	req := types.LoginRequest{
 		Email:    "123qq@qq.com",
 		Password: "1nidqkbdiovcf2",
@@ -18,4 +19,5 @@ func Test_check(t *testing.T) {
 	}
 
 	t.Log(err)
+
 }

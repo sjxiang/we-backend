@@ -15,11 +15,16 @@ import (
 
 type UserUsecase struct {
 	userRepo     UserRepo
+	userCache    UserCache    
 	tokenService token.TokenService
 }
 
-func NewUserUsecase(userRepo UserRepo, tokenService token.TokenService) *UserUsecase {
-	return &UserUsecase{userRepo: userRepo, tokenService: tokenService}
+func NewUserUsecase(userRepo UserRepo, userCache UserCache, tokenService token.TokenService) *UserUsecase {
+	return &UserUsecase{
+		userRepo:     userRepo, 
+		userCache:    userCache, 
+		tokenService: tokenService,
+	}
 }
 
 func (uc *UserUsecase) UserRegister(ctx context.Context, req *types.RegisterRequest) (*types.RegisterResponse, error) {

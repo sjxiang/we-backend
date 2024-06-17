@@ -26,9 +26,12 @@ func NewUserRepo(db *gorm.DB) biz.UserRepo {
 
 func (impl *userDatabase) Insert(ctx context.Context, user types.User) (int64, error) {
 	
-	if err := impl.db.Table("users").Create(&user).Error; err != nil {
-		
+	err := impl.db.Table("users").Create(&user).Error
+	
+	switch {
+	case err != nil:
 		var mysqlError *mysql.MySQLError
+		
 		if errors.As(err, &mysqlError) {
 			switch {
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
@@ -39,9 +42,9 @@ func (impl *userDatabase) Insert(ctx context.Context, user types.User) (int64, e
 		}
 
 		return 0, err
+	default:
+		return user.ID, nil 
 	}
-
-	return user.ID, nil 
 }
 
 
@@ -61,15 +64,15 @@ func (impl *userDatabase) FindOne(ctx context.Context, id int64) (*types.User, e
 }
 
 func (impl *userDatabase) FindOneByEmail(ctx context.Context, email string) (*types.User, error) {
-	var item types.User
+	var row types.User
 
-	err := impl.db.Table("users").Where("email = ?", email).First(&item).Error
+	err := impl.db.Table("users").Where("email = ?", email).First(&row).Error
 
 	switch err {
 	case gorm.ErrRecordNotFound:
 		return nil, errno.ErrRecordNoFound
 	case nil:
-		return &item, nil
+		return &row, nil
 	default:
 		return nil, err 
 	} 
@@ -78,16 +81,15 @@ func (impl *userDatabase) FindOneByEmail(ctx context.Context, email string) (*ty
 func (impl *userDatabase) FindOneByMobile(ctx context.Context, mobile string) (*types.User, error) {
 	var resp types.User
 	
-	if err := impl.db.Table("users").Where("mobile = ?", mobile).First(&resp).Error; err != nil {
-		switch {
-		case errors.Is(err, gorm.ErrRecordNotFound):
-			return nil, errno.ErrRecordNoFound
-		default:
-			return nil, err 
-		}
-	}
-
-	return &resp, nil 
+	err := impl.db.Table("users").Where("mobile = ?", mobile).First(&resp).Error
+	switch {
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		return nil, errno.ErrRecordNoFound
+	case err != nil:
+		return nil, err 
+	default:
+		return &resp, err 
+	} 
 }
 
 func (impl *userDatabase) Exists(ctx context.Context, id int64) (bool, error) {
@@ -132,7 +134,7 @@ func (impl *userDatabase) Delete(ctx context.Context, id int64) error {
 func (impl *userDatabase) Update(ctx context.Context, user types.User) error {
 	// 这种写法依赖于 GORM 的零值和主键更新特性
 	// Update 非零值 WHERE id = ?
-	
+
 	return impl.db.Table("users").Where("id = ?", user.ID).
 		Updates(map[string]any{
 			"nickname": user.Nickname,
@@ -146,41 +148,7 @@ func (impl *userDatabase) AllUsers(ctx context.Context) ([]*types.User, error) {
 	return nil, nil
 }
 
-func (impl *userDatabase) ResetPassword(ctx context.Context, id int64, password string) error {
-	
+func (impl *userDatabase) ResetPassword(ctx context.Context, id int64, password string) error {	
 	return nil 
 }
 
-
-// func (c CachedProductQuery) GetById(productId int) (product Product, err error) {
-// 	cacheKey := fmt.Sprintf("%s_%s_%d", c.prefix, "product_by_id", productId)
-// 	cachedResult := c.cacheClient.Get(c.productQuery.ctx, cacheKey)
-
-// 	err = func() error {
-// 		err1 := cachedResult.Err()
-// 		if err1 != nil {
-// 			return err1
-// 		}
-// 		cachedResultByte, err2 := cachedResult.Bytes()
-// 		if err2 != nil {
-// 			return err2
-// 		}
-// 		err3 := json.Unmarshal(cachedResultByte, &product)
-// 		if err3 != nil {
-// 			return err3
-// 		}
-// 		return nil
-// 	}()
-// 	if err != nil {
-// 		product, err = c.productQuery.GetById(productId)
-// 		if err != nil {
-// 			return Product{}, err
-// 		}
-// 		encoded, err := json.Marshal(product)
-// 		if err != nil {
-// 			return product, nil
-// 		}
-// 		_ = c.cacheClient.Set(c.productQuery.ctx, cacheKey, encoded, time.Hour)
-// 	}
-// 	return
-// }

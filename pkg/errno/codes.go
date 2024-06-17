@@ -15,6 +15,8 @@ const RecordNoFound       uint32 = 100_201
 const RecordAlreadyExists uint32 = 100_202
 const DuplicatedEntry     uint32 = 100_203
 
+const KeyNoFound          uint32 = 100_300
+
 
 // 用户模块
 const (
@@ -40,6 +42,7 @@ var (
 	ErrRecordAlreadyExists = NewErrNo(RecordAlreadyExists, "资源已存在")
 	ErrDuplicatedEntry     = NewErrNo(DuplicatedEntry, "重复条目")  
 	
+	ErrKeyNoFound          = NewErrNo(KeyNoFound, "key 不存在")
 
 	// 用户模块
 	ErrNotLogin            = NewErrNo(NotLogin, "用户未登录")

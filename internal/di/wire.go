@@ -23,9 +23,10 @@ func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 
 	// repository
 	userRepo := data.NewUserRepo(db)
+	userCache := data.NewUserCache(cache, cfg)
 
 	// usecase
-	userUsecase := biz.NewUserUsecase(userRepo, tokenService)
+	userUsecase := biz.NewUserUsecase(userRepo, userCache, tokenService)
 
 	// handler
 	handler := handler.NewHandler(userUsecase)
@@ -35,3 +36,4 @@ func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 
 	return api.NewServer(cfg, handler, middleware), nil 
 }
+
