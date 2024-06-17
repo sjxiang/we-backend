@@ -17,7 +17,7 @@
 mysql:
 	docker run -itd \
 		--name db \
-		-p 13306:3306 \
+		-p 3306:3306 \
 		-e ALLOW_EMPTY_PASSWORD=yes \
 		-e MYSQL_ROOT_PASSWORD=my-secret-pw \
 		bitnami/mysql:latest
@@ -25,7 +25,7 @@ mysql:
 redis:
 	docker run -itd \
 		--name cache \
-		-p 16379:6379 \
+		-p 6379:6379 \
 		-e ALLOW_EMPTY_PASSWORD=yes \
 		bitnami/redis:latest
 	

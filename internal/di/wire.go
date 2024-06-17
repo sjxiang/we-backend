@@ -13,20 +13,23 @@ import (
 
 func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 
-	// db
+	// db cache  
 	db := data.NewDB(cfg)
 	cache := data.NewCache(cfg)
-	
+
+	// repository
+	userDB := data.NewUserDatabase(db)
+	userCache := data.NewUserCache(cache, cfg)
+	userRepo := data.NewUseRepo(userDB, userCache)
+
 	// external service
 	tokenService := token.NewTokenService(cfg)
 	accessControlService := access.NewAccessControlService(cache, cfg)
 
 	// repository
-	userRepo := data.NewUserRepo(db)
-	userCache := data.NewUserCache(cache, cfg)
-
+	
 	// usecase
-	userUsecase := biz.NewUserUsecase(userRepo, userCache, tokenService)
+	userUsecase := biz.NewUserUsecase(userRepo, tokenService)
 
 	// handler
 	handler := handler.NewHandler(userUsecase)

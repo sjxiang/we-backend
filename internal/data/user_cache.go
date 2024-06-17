@@ -9,26 +9,25 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"we-backend/internal/biz"
 	"we-backend/internal/conf"
 	"we-backend/internal/types"
 	"we-backend/pkg/errno"
 )
 
 
-type userCache struct {
+type userCacheImpl struct {
 	cmd        redis.Cmdable  
 	expiration time.Duration
 }
 
-func NewUserCache(cache *redis.Client, cfg *conf.Config) biz.UserCache {
-	return &userCache{
+func NewUserCache(cache *redis.Client, cfg *conf.Config) UserCache {
+	return &userCacheImpl{
 		cmd:        cache,
 		expiration: time.Minute * time.Duration(cfg.RedisExpiration),
 	}
 }
  
-func (impl *userCache) Get(ctx context.Context, id int64) (*types.User, error) {
+func (impl *userCacheImpl) Get(ctx context.Context, id int64) (*types.User, error) {
 	
 	key := userIDKey(id)
 
@@ -48,7 +47,7 @@ func (impl *userCache) Get(ctx context.Context, id int64) (*types.User, error) {
 	return &user, nil 
 }
 
-func (impl *userCache) Set(ctx context.Context, user types.User) error {
+func (impl *userCacheImpl) Set(ctx context.Context, user types.User) error {
 	data, err := json.Marshal(user)
 	if err != nil {
 		return fmt.Errorf("failed to encode user: %w", err)
@@ -59,7 +58,7 @@ func (impl *userCache) Set(ctx context.Context, user types.User) error {
 	return impl.cmd.Set(ctx, key, data, impl.expiration).Err()
 }
 
-func (impl *userCache) Del(ctx context.Context, id int64) error {
+func (impl *userCacheImpl) Del(ctx context.Context, id int64) error {
 	key := userIDKey(id)
 	
 	err := impl.cmd.Del(ctx, key).Err()

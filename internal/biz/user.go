@@ -15,14 +15,12 @@ import (
 
 type UserUsecase struct {
 	userRepo     UserRepo
-	userCache    UserCache    
 	tokenService token.TokenService
 }
 
-func NewUserUsecase(userRepo UserRepo, userCache UserCache, tokenService token.TokenService) *UserUsecase {
+func NewUserUsecase(userRepo UserRepo, tokenService token.TokenService) *UserUsecase {
 	return &UserUsecase{
 		userRepo:     userRepo, 
-		userCache:    userCache, 
 		tokenService: tokenService,
 	}
 }
@@ -82,15 +80,15 @@ func (uc *UserUsecase) UserLogin(ctx context.Context, req *types.LoginRequest) (
 }
 
 func (uc *UserUsecase) UserProfile(ctx context.Context, req *types.ProfileRequest) (*types.ProfileResponse, error) {
+	
 	user, err := uc.userRepo.FindOne(ctx, req.UserID)
 	if err != nil {
 		return nil, err
 	}
-
+	
 	rsp := &types.ProfileResponse{
 		Profile: types.ExportUserForFeedback(user),
 	}
-
 	return rsp, nil 
 }
 

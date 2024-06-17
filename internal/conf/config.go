@@ -48,13 +48,13 @@ func LoadConfig() (config *Config, err error) {
 	cfg.Env               = SERVER_ENV_DEV
 
 	cfg.MySQLHost         = "127.0.0.1"
-	cfg.MySQLPort         = 13306
+	cfg.MySQLPort         = 3306
 	cfg.MySQLUser         = "root"
 	cfg.MySQLPassword     = "my-secret-pw"
 	cfg.MySQLDatabaseName = "we_backend"
 
 	cfg.RedisHost         = "127.0.0.1"
-	cfg.RedisPort         = "16379"
+	cfg.RedisPort         = "6379"
 	cfg.RedisPassword     = ""
 	cfg.RedisDB           = 0
 	cfg.RedisExpiration   = 24
