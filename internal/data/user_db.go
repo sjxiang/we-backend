@@ -33,7 +33,8 @@ func (impl *userDatabaseImpl) Insert(ctx context.Context, user types.User) (int6
 		
 		if errors.As(err, &mysqlError) {
 			switch {
-			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
+			case mysqlError.Number == 1062 && 
+					strings.Contains(mysqlError.Message, "users.uk_email"):
 				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
 			default:
 				return 0, errno.ErrDuplicatedEntry

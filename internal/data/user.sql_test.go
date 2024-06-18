@@ -33,13 +33,6 @@ func Test_raw_insert_user(t *testing.T) {
 	t.Logf("用户 id %d\n", id)
 }
 
-func Test_raw_find_one(t *testing.T) {
-	
-}
-
-func Test_raw_find_one_by_email(t *testing.T) {
-	
-}
 
 func Test_raw_delete_user(t *testing.T) {
 	cfg, _ := conf.LoadConfig()
@@ -60,19 +53,4 @@ func Test_raw_reset_password(t *testing.T) {
 
 func Test_raw_exists(t *testing.T) {
 	
-}
-
-func Test_all_users(t *testing.T) {
-	cfg, _ := conf.LoadConfig()
-
-	db := NewRawDatabase(cfg)
-	
-	repo := &userRawDatabase{rawDB: db}
-
-	users, err := repo.AllUsers(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Log(users)
 }

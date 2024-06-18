@@ -23,7 +23,9 @@ func (h *middleware) RateLimit() gin.HandlerFunc {
 			return
 		}
 
-		over , err := h.accessControlService.Limit(c, fmt.Sprintf("request_ip:%s", c.RemoteIP()))
+		requestIP := requestIPKey(c.RemoteIP())
+
+		over , err := h.rateLimitService.Limit(c, requestIP)
 		if err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)  // redis 被打崩了，那就别玩了
 			return
@@ -46,3 +48,6 @@ const (
 )
 
 
+func requestIPKey(ip string) string {
+	return fmt.Sprintf("request_ip:%s", ip)
+}

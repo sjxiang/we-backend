@@ -7,7 +7,7 @@ import (
 	"we-backend/internal/biz"
 	"we-backend/internal/conf"
 	"we-backend/internal/data"
-	"we-backend/internal/service/access"
+	"we-backend/internal/service/accesscontrol"
 	"we-backend/internal/service/token"
 )
 
@@ -24,10 +24,8 @@ func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 
 	// external service
 	tokenService := token.NewTokenService(cfg)
-	accessControlService := access.NewAccessControlService(cache, cfg)
+	rateLimitService := accesscontrol.NewRateLimitService(cache, cfg)
 
-	// repository
-	
 	// usecase
 	userUsecase := biz.NewUserUsecase(userRepo, tokenService)
 
@@ -35,7 +33,7 @@ func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 	handler := handler.NewHandler(userUsecase)
 
 	// middleware
-	middleware := middleware.NewMiddleware(tokenService, accessControlService)
+	middleware := middleware.NewMiddleware(tokenService, rateLimitService)
 
 	return api.NewServer(cfg, handler, middleware), nil 
 }

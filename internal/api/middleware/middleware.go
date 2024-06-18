@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
-	"we-backend/internal/service/access"
+	"we-backend/internal/service/accesscontrol"
 	"we-backend/internal/service/token"
 )
 
@@ -15,14 +15,14 @@ type Middleware interface {
 }
 
 type middleware struct {
-	tokenService         token.TokenService
-	accessControlService access.AccessControlService
+	tokenService        token.TokenService
+	rateLimitService    accesscontrol.AccessControl
 }
 
-func NewMiddleware(tokenService token.TokenService, accessControlService access.AccessControlService) Middleware {
+func NewMiddleware(tokenService token.TokenService, rateLimitService accesscontrol.AccessControl) Middleware {
 	return &middleware{
-		tokenService:         tokenService,
-		accessControlService: accessControlService,
+		tokenService:        tokenService,
+		rateLimitService:    rateLimitService,
 	}
 }
 

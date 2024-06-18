@@ -39,34 +39,6 @@ type Config struct {
 }
 
 
-func LoadConfig() (config *Config, err error) {
-	cfg := &Config{}
-	
-	cfg.ServerHost        = "127.0.0.1"
-	cfg.ServerPort        = 5678
-	cfg.SecretKey         = "8xEMrWkBARcDDYQ"
-	cfg.Env               = SERVER_ENV_DEV
-
-	cfg.MySQLHost         = "127.0.0.1"
-	cfg.MySQLPort         = 3306
-	cfg.MySQLUser         = "root"
-	cfg.MySQLPassword     = "my-secret-pw"
-	cfg.MySQLDatabaseName = "we_backend"
-
-	cfg.RedisHost         = "127.0.0.1"
-	cfg.RedisPort         = "6379"
-	cfg.RedisPassword     = ""
-	cfg.RedisDB           = 0
-	cfg.RedisExpiration   = 24
-	
-	cfg.JWTIssuer         = "we"
-	cfg.JWTExpirationTime = 30 * 86400
-	
-	cfg.LimitInternal     = 60
-	cfg.LimitRate         = 5
-	
-	return cfg, nil
-}
 
 func (cfg *Config) GetServerAddr() string {
 	// "127.0.0.1:8001"

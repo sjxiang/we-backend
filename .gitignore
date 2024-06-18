@@ -27,3 +27,4 @@ go.sum
 
 # other
 doc/
+internal/conf/load.go

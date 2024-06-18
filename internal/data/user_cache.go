@@ -47,6 +47,7 @@ func (impl *userCacheImpl) Get(ctx context.Context, id int64) (*types.User, erro
 	return &user, nil 
 }
 
+// 使用 Redis Set 创建/覆盖缓存，并设置 1 分钟 TTL 过期时间 
 func (impl *userCacheImpl) Set(ctx context.Context, user types.User) error {
 	data, err := json.Marshal(user)
 	if err != nil {
