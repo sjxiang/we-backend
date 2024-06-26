@@ -15,14 +15,14 @@ type Middleware interface {
 }
 
 type middleware struct {
-	tokenService        token.TokenService
-	rateLimitService    accesscontrol.AccessControl
+	tokenService         token.TokenService
+	accessControlService accesscontrol.AccessControlService
 }
 
-func NewMiddleware(tokenService token.TokenService, rateLimitService accesscontrol.AccessControl) Middleware {
+func NewMiddleware(tokenService token.TokenService, accessControlService accesscontrol.AccessControlService) Middleware {
 	return &middleware{
-		tokenService:        tokenService,
-		rateLimitService:    rateLimitService,
+		tokenService:         tokenService,
+		accessControlService: accessControlService,
 	}
 }
 

@@ -39,3 +39,9 @@ curl --location --request POST 'localhost:5678/api/v1/user/edit' \
 }'
 
 
+# 验证码请求登录
+curl --location --request POST 'localhost:5678/api/v1/user/login_sms/otp/send' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "phone_number": "sjxiang2020@outlook.com"
+}'

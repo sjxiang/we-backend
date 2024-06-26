@@ -24,3 +24,9 @@ type UserCache interface {
 	Set(ctx context.Context, user types.User) error
 	Del(ctx context.Context, id int64) error
 }
+
+
+type OtpCache interface {
+	Set(ctx context.Context, biz, phoneNumber, code string) error
+	Verify(ctx context.Context, biz, phoneNumber, code string) (bool, error)
+}

@@ -12,6 +12,9 @@ func UserRoutes(group *gin.RouterGroup, h handler.Handler, m middleware.Middlewa
 		group.GET("/health", h.HealthCheck)
 		group.POST("/register", h.Register)
 		group.POST("/login", h.Login)
+		group.POST("/login_sms/otp/send", h.SentOtp)
+		group.POST("/login_sms/otp/verify", h.VerifyOtp)
+		
 		
 		// 了解 gin 注册`中间件和路由`顺序的骚操作
 		group.Use(m.Authenticate())

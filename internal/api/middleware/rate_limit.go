@@ -25,7 +25,7 @@ func (h *middleware) RateLimit() gin.HandlerFunc {
 
 		requestIP := requestIPKey(c.RemoteIP())
 
-		over , err := h.rateLimitService.Limit(c, requestIP)
+		over , err := h.accessControlService.Limit(c, requestIP)
 		if err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)  // redis 被打崩了，那就别玩了
 			return

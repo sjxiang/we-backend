@@ -17,3 +17,11 @@ type UserRepo interface {
 	Update(ctx context.Context, user types.User) error 
 	AllUsers(ctx context.Context) ([]*types.User, error)
 }
+
+
+type OtpRepo interface {
+	// Store
+	Insert(ctx context.Context, biz, phoneNumber, code string) error
+	// 
+	FindOne(ctx context.Context, biz, phoneNumber, inputCode string) (bool, error)
+}

@@ -16,7 +16,7 @@ type userRepo struct {
 	cache     UserCache 
 }
 
-func NewUseRepo(database UserDatabase, cache UserCache) biz.UserRepo {
+func NewUserRepo(database UserDatabase, cache UserCache) biz.UserRepo {
 	return &userRepo{
 		database: database,
 		cache:    cache,

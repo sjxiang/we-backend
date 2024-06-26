@@ -17,7 +17,7 @@
 mysql:
 	docker run -itd \
 		--name db \
-		-p 3306:3306 \
+		-p 13306:3306 \
 		-e ALLOW_EMPTY_PASSWORD=yes \
 		-e MYSQL_ROOT_PASSWORD=my-secret-pw \
 		bitnami/mysql:latest

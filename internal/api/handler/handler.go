@@ -9,11 +9,13 @@ import (
 
 type handler struct {
 	userUsecase     *biz.UserUsecase
+	otpUsecase      *biz.OtpUsecase
 }
 
-func NewHandler(userUsecase *biz.UserUsecase) Handler {
+func NewHandler(userUsecase *biz.UserUsecase, otpUsecase *biz.OtpUsecase) Handler {
 	return &handler{
 		userUsecase: userUsecase, 
+		otpUsecase:  otpUsecase,
 	}
 }
 
@@ -24,4 +26,6 @@ type Handler interface {
 	Login(c *gin.Context)
 	Me(c *gin.Context)
 	Edit(c *gin.Context)
+	SentOtp(c *gin.Context)
+	VerifyOtp(c *gin.Context)
 }

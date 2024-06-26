@@ -28,6 +28,13 @@ const (
 	ExpiredToken        uint32 = 200_201
 )
 
+// otp 模块
+const (
+	OtpSendTooMany      uint32 = 300_100
+	OtpVerifyTooMany    uint32 = 300_101
+
+)
+
 
 var (
 	// 通用
@@ -51,6 +58,9 @@ var (
 
 	ErrInvalidToken        = NewErrNo(InvalidToken, "token 无效，请重新登录")
 	ErrExpiredToken        = NewErrNo(ExpiredToken, "token 过期，请重新登录")
+
+	ErrOtpSendTooMany     = NewErrNo(OtpSendTooMany, "otp 发送太频繁")
+	ErrOtpVerifyTooMany    = NewErrNo(OtpVerifyTooMany, "otp 验证太频繁")
 )
 
 

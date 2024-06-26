@@ -36,6 +36,14 @@ type Config struct {
 
 	LimitInternal          int64  // 一秒内上限 100 个请求
 	LimitRate              int64  
+
+	GmailSenderName        string
+	GmailSenderAddress     string
+	GmailSenderPassword    string
+	
+	QQmailSenderName       string
+	QQmailSenderAddress    string
+	QQmailSenderPassword   string
 }
 
 
