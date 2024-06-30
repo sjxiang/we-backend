@@ -1,6 +1,10 @@
 package jwtx
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 
 const SecretKey string = "nciwgh9wvt2"
@@ -13,15 +17,11 @@ func Test_generate_auth_to_token(t *testing.T) {
 	)
 
 	token, err := GenerateAuth2Token(id, userAgent, SecretKey)
-	if err != nil {
-		t.Log(err)
-	}
+	require.NoError(t, err)
 
 	claims, err := ExtractAuth2Token(token, SecretKey)
-	if err != nil {
-		t.Log(err)
-	}
-
+	require.NoError(t, err)
+	
 	t.Log(claims.ID)
 	t.Log(claims.UserAgent)
 }

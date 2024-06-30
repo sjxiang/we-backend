@@ -10,24 +10,26 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+
+
 type LoginRequest struct {
 	Email    string `json:"email"    validate:"required,email"`
 	Password string `json:"password" validate:"required,min=8,max=32"`  
 }
 
 func (req *LoginRequest) Validate() []string {
-	errs := make([]string, 0)
+	violations := make([]string, 0)
 	
 	if err := ValidateString(req.Password, 8, 32); err != nil {
-		errs = append(errs, err.Error())
+		violations = append(violations, err.Error())
 	}
 
 	if _, err := mail.ParseAddress(req.Email); err != nil {
-		errs = append(errs, "不是有效的 email")
+		violations = append(violations, "不是有效的 email")
 	}
 
 	if err := validator.New().Var(req.Email, "required,email"); err != nil {
-		errs = append(errs, "不是有效的 email")
+		violations = append(violations, "不是有效的 email")
 	}
 
 	allowed := false
@@ -38,28 +40,17 @@ func (req *LoginRequest) Validate() []string {
 		}
 	}
 	if !allowed {
-		errs = append(errs, "邮箱地址的域名不在白名单中")
+		violations = append(violations, "邮箱地址的域名不在白名单中")
 	}
 
-	return errs
+	return violations
 }
-
-func (req *LoginRequest) ExportEmailInString() string {
-	return req.Email
-}
-
-func (req *LoginRequest) ExportPasswordInString() string {
-	return req.Password
-}
-
 
 func ValidateString(value string, minLength int, maxLength int) error {
-	// n := len(value)  // 返回字节长度
-	
 	n := utf8.RuneCountInString(value)  // 返回字符长度
 
 	if n < minLength || n > maxLength {
-		return fmt.Errorf("字符长度必须在 %d-%d 之间", minLength, maxLength)
+		return fmt.Errorf("字符长度必须在 %d ~ %d 之间", minLength, maxLength)
 	}
 	return nil
 }
@@ -79,10 +70,13 @@ var emailDomainWhitelist = []string{
 
 
 type LoginResponse struct {
-	AccessToken          string    `json:"access_token"`
-	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
+	AccessToken  string    `json:"access_token"`
+	ExpiresAt    time.Time `json:"expires_at"`
 }
 
-func (x *LoginResponse) ExportForFeedback() *LoginResponse {
-	return x
+
+type RegisterRequest struct {
+	Email           string   `json:"email"            validate:"required,email"         binding:"required,email"`
+	Password        string   `json:"password"         validate:"required,min=8,max=32"  binding:"required,min=8,max=48"`
+	PasswordConfirm string   `json:"password_confirm" validate:"eqfield=Password"       binding:"eqfield=Password"`
 }

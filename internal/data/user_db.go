@@ -4,93 +4,76 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"fmt"
 
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 
 	"we-backend/internal/types"
-	"we-backend/pkg/errno"
+	"we-backend/pkg/we"
 )
 
 
 type userDatabaseImpl struct {
-	db *gorm.DB 
+	DB *gorm.DB 
 }
 
 func NewUserDatabase(db *gorm.DB) UserDatabase {
 	return &userDatabaseImpl{
-		db: db,
+		DB: db,
 	}
 }
 
-func (impl *userDatabaseImpl) Insert(ctx context.Context, user types.User) (int64, error) {
+func (impl *userDatabaseImpl) Create(ctx context.Context, user types.User) (types.User, error) {
 	
-	err := impl.db.Table("users").Create(&user).Error
-	
-	switch {
-	case err != nil:
+	if err := impl.DB.Table("users").Create(&user).Error; err != nil {
+		
 		var mysqlError *mysql.MySQLError
 		
 		if errors.As(err, &mysqlError) {
 			switch {
-			case mysqlError.Number == 1062 && 
-					strings.Contains(mysqlError.Message, "users.uk_email"):
-				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
+			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
+				return types.User{}, we.ErrAlreadyExists  
 			default:
-				return 0, errno.ErrDuplicatedEntry
+				return types.User{}, we.ErrAlreadyExists
 			}
 		}
 
-		return 0, err
-	default:
-		return user.ID, nil 
+		return types.User{}, fmt.Errorf("error insert: %v", err)
 	}
+
+	return user, nil 
 }
 
+func (impl *userDatabaseImpl) GetByEmail(ctx context.Context, email string) (types.User, error) {
+	
+	u := types.User{}
 
-func (impl *userDatabaseImpl) FindOne(ctx context.Context, id int64) (*types.User, error) {
-	var item types.User
+	if err := impl.DB.Table("users").Where("email = ?", email).First(&u).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return types.User{}, we.ErrNotFound
+		}
 
-	err := impl.db.Table("users").Where("id = ?", id).First(&item).Error
+		return types.User{}, fmt.Errorf("error select: %v", err)
+	}
+
+	return u, nil 
+}
+
+func (impl *userDatabaseImpl) GetByID(ctx context.Context, id int64) (types.User, error) {
+	
+	u := types.User{}
+
+	err := impl.DB.Table("users").Where("id = ?", id).First(&u).Error
 	
 	switch {
 	case errors.Is(err, gorm.ErrRecordNotFound):
-		return nil, errno.ErrRecordNoFound
+		return types.User{}, we.ErrNotFound
 	case err != nil:
-		return nil, err
+		return types.User{}, fmt.Errorf("error select: %v", err)
 	default:
-		return &item, nil 
-	} 
-}
-
-
-func (impl *userDatabaseImpl) FindOneByEmail(ctx context.Context, email string) (*types.User, error) {
-	var row types.User
-
-	err := impl.db.Table("users").Where("email = ?", email).First(&row).Error
-
-	switch err {
-	case gorm.ErrRecordNotFound:
-		return nil, errno.ErrRecordNoFound
-	case nil:
-		return &row, nil
-	default:
-		return nil, err 
-	} 
-}
-
-func (impl *userDatabaseImpl) FindOneByMobile(ctx context.Context, mobile string) (*types.User, error) {
-	var resp types.User
-	
-	err := impl.db.Table("users").Where("mobile = ?", mobile).First(&resp).Error
-	switch {
-	case errors.Is(err, gorm.ErrRecordNotFound):
-		return nil, errno.ErrRecordNoFound
-	case err != nil:
-		return nil, err 
-	default:
-		return &resp, err 
-	} 
+		return u, nil 
+	}  
 }
 
 func (impl *userDatabaseImpl) Exists(ctx context.Context, id int64) (bool, error) {
@@ -98,30 +81,15 @@ func (impl *userDatabaseImpl) Exists(ctx context.Context, id int64) (bool, error
 
 	stmt := "SELECT EXISTS(SELECT true FROM user WHERE id = ?)"
 
-	err := impl.db.Raw(stmt, id).Scan(&exists).Error
+	err := impl.DB.Raw(stmt, id).Scan(&exists).Error
 
 	return exists, err
 }
 
 func (impl *userDatabaseImpl) Delete(ctx context.Context, id int64) error {
 	
-	if err := impl.db.Transaction(func(tx *gorm.DB) error {
-		var exists bool
-
-		stmt := "SELECT EXISTS(SELECT true FROM user WHERE id = ?)"
-
-		if err := tx.Raw(stmt, id).Scan(&exists).Error; err != nil {
-			return err
-		}
-		if !exists {
-			return errno.ErrRecordNoFound
-		}
-		
-		if err := tx.Delete(&types.User{}, id).Error; err != nil {
-			return err
-		}
-
-		return nil
+	if err := impl.DB.Transaction(func(tx *gorm.DB) error {
+		return deleteUser(tx, id)
 	}); err != nil {
 		return err 
 	}
@@ -130,13 +98,31 @@ func (impl *userDatabaseImpl) Delete(ctx context.Context, id int64) error {
 }
 
 
+func deleteUser(tx *gorm.DB, id int64) error {
+	var exists bool
+
+	stmt := "SELECT EXISTS(SELECT true FROM user WHERE id = ?)"
+
+	if err := tx.Raw(stmt, id).Scan(&exists).Error; err != nil {
+		return err
+	}
+	if !exists {
+		return we.ErrNotFound
+	}
+	
+	if err := tx.Where("id = ?", id).Delete(&types.User{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
 
 
 func (impl *userDatabaseImpl) Update(ctx context.Context, user types.User) error {
 	// 这种写法依赖于 GORM 的零值和主键更新特性
 	// Update 非零值 WHERE id = ?
 
-	return impl.db.Table("users").Where("id = ?", user.ID).
+	return impl.DB.Table("users").Where("id = ?", user.ID).
 		Updates(map[string]any{
 			"nickname": user.Nickname,
 			"avatar":   user.Avatar,
@@ -145,8 +131,15 @@ func (impl *userDatabaseImpl) Update(ctx context.Context, user types.User) error
 	}).Error
 }
 
-func (impl *userDatabaseImpl) AllUsers(ctx context.Context) ([]*types.User, error) {
-	return nil, nil
+func (impl *userDatabaseImpl) All(ctx context.Context) ([]types.User, error) {
+	
+	var uu []types.User
+	
+	if err := impl.DB.Table("users").Find(&uu).Error; err != nil {
+		return nil, err
+	}
+	
+	return uu, nil 
 }
 
 func (impl *userDatabaseImpl) ResetPassword(ctx context.Context, id int64, password string) error {	

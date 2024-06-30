@@ -1,4 +1,4 @@
-package errno
+package we
 
 import (
 	"errors"

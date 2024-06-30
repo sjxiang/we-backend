@@ -3,11 +3,12 @@ package data
 import (
 	"context"
 	"testing"
-	
+
 	"golang.org/x/crypto/bcrypt"
 
 	"we-backend/internal/conf"
 	"we-backend/internal/types"
+	"we-backend/pkg/faker"
 )
 
 func Test_raw_insert_user(t *testing.T) {
@@ -19,9 +20,9 @@ func Test_raw_insert_user(t *testing.T) {
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("123456"), 10)
 	id , err := repo.Insert(context.TODO(), types.User{
-		Nickname: "admin",
-		Email:    "admin123@qq.com",
-		Mobile:   "13300001111",
+		Nickname: faker.Username(),
+		Email:    faker.Email(),
+		Mobile:   "1330000"+faker.RandIntSpec(),
 		Password: string(hashedPassword),
 		Avatar:   "jisoo.jpeg",
 		Intro:    "life is fucking movie.",
@@ -45,12 +46,4 @@ func Test_raw_delete_user(t *testing.T) {
 		t.Fatal(err)
 	}
 
-}
-
-func Test_raw_reset_password(t *testing.T) {
-	
-}
-
-func Test_raw_exists(t *testing.T) {
-	
 }

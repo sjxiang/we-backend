@@ -2,6 +2,7 @@ package handler
 
 import "github.com/gin-gonic/gin"
 
-func (h *handler) VerifyOtp(c *gin.Context) {
 
+func (h *handler) ResetPassword(c *gin.Context) {
+	
 }

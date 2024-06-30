@@ -25,13 +25,14 @@ func NewQQMailSender(cfg *conf.Config) EmailSender {
 	}
 }
 
-func (sender *QQMailSender) SendEmail(
-	subject string,
-	content string,
-	to []string,
-	cc []string,
-	bcc []string,
-	attachFiles []string,
+
+func (sender *QQMailSender) proxy(
+	subject string,  // 邮件主题
+	content string,  // 邮件内容
+	to []string,     // 收件人邮件地址
+	cc []string,     // 抄送（群发可见，套瓷多尴尬）
+	bcc []string,    // 抄送（群发不可见）
+	attachFiles []string,  // 附件
 ) error {
 
 	m := mail.NewMessage()
@@ -51,4 +52,8 @@ func (sender *QQMailSender) SendEmail(
 	}
 	
 	return d.DialAndSend(m)
+}
+
+func (sender *QQMailSender) SendEmail(subject, content, to string) error {
+	return sender.proxy(subject, content, []string{to}, nil, nil, nil)
 }

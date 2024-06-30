@@ -3,7 +3,6 @@ package mail
 import (
 	"fmt"
 	"net/smtp"
-	"we-backend/internal/conf"
 
 	"github.com/jordan-wright/email"
 )
@@ -20,11 +19,11 @@ type GmailSender struct {
 	fromEmailPassword string  // 发件人邮箱密码
 }
 
-func NewGmailSender(cfg *conf.Config) EmailSender {
+func NewGmailSender(name string, fromEmailAddress string, fromEmailPassword string) *GmailSender {
 	return &GmailSender{
-		name:              cfg.GmailSenderName,
-		fromEmailAddress:  cfg.GmailSenderAddress,
-		fromEmailPassword: cfg.GmailSenderPassword,
+		name:              name,
+		fromEmailAddress:  fromEmailAddress,
+		fromEmailPassword: fromEmailPassword,
 	}
 }
 

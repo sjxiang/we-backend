@@ -6,27 +6,20 @@ import (
 	"we-backend/internal/types"
 )
 
-
 type UserDatabase interface {
-	Insert(ctx context.Context, user types.User) (int64, error)
-	FindOne(ctx context.Context, id int64) (*types.User, error)
-	FindOneByEmail(ctx context.Context, email string) (*types.User, error) 
-	FindOneByMobile(ctx context.Context, mobile string) (*types.User, error) 
+	Create(ctx context.Context, user types.User) (types.User, error)
+	GetByEmail(ctx context.Context, email string) (types.User, error)
+	GetByID(ctx context.Context, id int64) (types.User, error)
 	Exists(ctx context.Context, id int64) (bool, error) 
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, user types.User) error 
-	AllUsers(ctx context.Context) ([]*types.User, error)
+	All(ctx context.Context) ([]types.User, error)
 }
 
 
 type UserCache interface {
-	Get(ctx context.Context, id int64) (*types.User, error)
+	Get(ctx context.Context, id int64) (types.User, error)
 	Set(ctx context.Context, user types.User) error
 	Del(ctx context.Context, id int64) error
 }
 
-
-type OtpCache interface {
-	Set(ctx context.Context, biz, phoneNumber, code string) error
-	Verify(ctx context.Context, biz, phoneNumber, code string) (bool, error)
-}

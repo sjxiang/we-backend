@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"we-backend/internal/types"
-	"we-backend/pkg/errno"
 	"we-backend/pkg/utils"
+	"we-backend/pkg/we"
 )
 
 // 查看用户详情
@@ -15,19 +15,18 @@ func (h *handler) Me(c *gin.Context) {
 
 	userID, err := utils.GetUserIDFromAuth(c)
 	if err != nil {
-		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage("请重新登录"))
+		utils.FeedbackBadRequest(c, we.ErrNotLogin.WithMessage(err.Error()))
 		return
 	}
 
-	req := types.ProfileRequest{
+	input := types.MeInput{
 		UserID: userID,
 	}
-
-	rsp, err := h.userUsecase.UserProfile(context.TODO(), &req)
+	resp, err := h.UserUsecase.Me(context.Background(), input)
 	if err != nil {
 		utils.FeedbackBadRequest(c, err)
 		return
 	}
 
-	utils.FeedbackOK(c,  rsp)
+	utils.FeedbackOK(c, "用户详情", resp)
 }

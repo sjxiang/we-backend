@@ -7,7 +7,7 @@ curl --location --request GET 'localhost:5678/api/v1/user/health'
 curl --location --request POST 'localhost:5678/api/v1/user/register' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "email": "1535484940@qq.com",
+    "email": "1535484943@qq.com",
     "password": "123456@qwe",
     "password_confirm": "123456@qwe"
 }'
@@ -17,19 +17,19 @@ curl --location --request POST 'localhost:5678/api/v1/user/register' \
 curl --location --request POST 'localhost:5678/api/v1/user/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "email": "1535484940@qq.com",
+    "email": "1535484943@qq.com",
     "password": "123456@qwe"
 }'
 
 
 # 用户详情
 curl --location --request GET 'localhost:5678/api/v1/user/me' \
---header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoiMTUzNTQ4NDk0MEBxcS5jb20iLCJpc3N1ZWRfYXQiOiIyMDI0LTA2LTE3VDIwOjE3OjQzLjE3OTMzNDE4OSswODowMCIsImV4cGlyZWRfYXQiOiIyMDI0LTA2LTIzVDIwOjE3OjQzLjE3OTMzNDMyOSswODowMCJ9.fWp2iyiFAuGUguY0zS9NWOC3xzWEjqZ0auWBJ6LoJ-c' 
+--header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUsImVtYWlsIjoiMTUzNTQ4NDk0M0BxcS5jb20iLCJpc3N1ZWRfYXQiOiIyMDI0LTA2LTMwVDE1OjQ5OjA1LjY4MzMwMDE5MiswODowMCIsImV4cGlyZWRfYXQiOiIyMDI0LTA3LTA2VDE1OjQ5OjA1LjY4MzMwMDI1MiswODowMCJ9.rVgQ3_dWi3PWzZfJrpEEoT3RW_l58C1g4TLY2fAqy9A' 
 
 
 # 编辑用户信息
 curl --location --request POST 'localhost:5678/api/v1/user/edit' \
---header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoiMTUzNTQ4NDk0MEBxcS5jb20iLCJpc3N1ZWRfYXQiOiIyMDI0LTA2LTE1VDE2OjEwOjI1LjYxMTYxMDU5NiswODowMCIsImV4cGlyZWRfYXQiOiIyMDI0LTA2LTIxVDE2OjEwOjI1LjYxMTYxMDczNiswODowMCJ9.C5XLRCE99xGsbqdNEkSikU6ncBu1XOPlaAiQUP1jG6k' \
+--header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUsImVtYWlsIjoiMTUzNTQ4NDk0M0BxcS5jb20iLCJpc3N1ZWRfYXQiOiIyMDI0LTA2LTMwVDE1OjQ5OjA1LjY4MzMwMDE5MiswODowMCIsImV4cGlyZWRfYXQiOiIyMDI0LTA3LTA2VDE1OjQ5OjA1LjY4MzMwMDI1MiswODowMCJ9.rVgQ3_dWi3PWzZfJrpEEoT3RW_l58C1g4TLY2fAqy9A' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "avatar": "jisoo.jpeg",
@@ -45,3 +45,17 @@ curl --location --request POST 'localhost:5678/api/v1/user/login_sms/otp/send' \
 --data-raw '{
     "phone_number": "sjxiang2020@outlook.com"
 }'
+
+# 验证码校验登录
+curl --location --request POST 'localhost:5678/api/v1/user/login_sms/otp/verify' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "phone_number": "sjxiang2020@outlook.com",
+    "input_code": ""
+
+}'
+
+
+# 用户列表
+curl --location --request GET 'localhost:5678/api/v1/user/admin' \
+--header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjUsImVtYWlsIjoiMTUzNTQ4NDk0M0BxcS5jb20iLCJpc3N1ZWRfYXQiOiIyMDI0LTA2LTMwVDE1OjQ5OjA1LjY4MzMwMDE5MiswODowMCIsImV4cGlyZWRfYXQiOiIyMDI0LTA3LTA2VDE1OjQ5OjA1LjY4MzMwMDI1MiswODowMCJ9.rVgQ3_dWi3PWzZfJrpEEoT3RW_l58C1g4TLY2fAqy9A' 

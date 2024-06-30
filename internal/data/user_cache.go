@@ -11,7 +11,7 @@ import (
 
 	"we-backend/internal/conf"
 	"we-backend/internal/types"
-	"we-backend/pkg/errno"
+	"we-backend/pkg/we"
 )
 
 
@@ -27,24 +27,24 @@ func NewUserCache(cache *redis.Client, cfg *conf.Config) UserCache {
 	}
 }
  
-func (impl *userCacheImpl) Get(ctx context.Context, id int64) (*types.User, error) {
+func (impl *userCacheImpl) Get(ctx context.Context, id int64) (types.User, error) {
 	
 	key := userIDKey(id)
 
 	value, err := impl.cmd.Get(ctx, key).Result()
 	if errors.Is(err, redis.Nil) {
-		return nil, errno.ErrKeyNoFound
+		return types.User{}, we.ErrCacheKeyNoFound
 	} else if err != nil {
-		return nil, fmt.Errorf("get user: %w", err)
+		return types.User{}, fmt.Errorf("get user: %w", err)
 	}
 
 	var user types.User
 	err = json.Unmarshal([]byte(value), &user)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode user json: %w", err)
+		return types.User{}, fmt.Errorf("failed to decode user json: %w", err)
 	}
 
-	return &user, nil 
+	return user, nil 
 }
 
 // 使用 Redis Set 创建/覆盖缓存，并设置 1 分钟 TTL 过期时间 
@@ -65,7 +65,7 @@ func (impl *userCacheImpl) Del(ctx context.Context, id int64) error {
 	err := impl.cmd.Del(ctx, key).Err()
 	switch {
 	case errors.Is(err, redis.Nil):
-		return errno.ErrKeyNoFound
+		return we.ErrCacheKeyNoFound
 	case err != nil:
 		return fmt.Errorf("failed to remove user: %w", err)
 	default:

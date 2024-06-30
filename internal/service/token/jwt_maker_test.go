@@ -3,14 +3,15 @@ package token
 import (
 	"testing"
 	"time"
-	"we-backend/pkg/utils"
 
 	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/require"
+
+	"we-backend/pkg/faker"
 )
 
 func TestJWTMaker(t *testing.T) {
-	maker, err := NewJWTMaker(utils.RandomString(32))
+	maker, err := NewJWTMaker(faker.RandStr(32))
 	require.NoError(t, err)
 
 	var id int64 = 1
@@ -37,7 +38,7 @@ func TestJWTMaker(t *testing.T) {
 
 // 测试过期 token
 func TestExpiredJWTToken(t *testing.T) {
-	maker, err := NewJWTMaker(utils.RandomString(32))
+	maker, err := NewJWTMaker(faker.RandStr(32))
 	require.NoError(t, err)
 
 	var id int64 = 1
@@ -64,7 +65,7 @@ func TestInvalidJWTTokenAlgNone(t *testing.T) {
 	token, err := jwtToken.SignedString(jwt.UnsafeAllowNoneSignatureType)
 	require.NoError(t, err)
 
-	maker, err := NewJWTMaker(utils.RandomString(32))
+	maker, err := NewJWTMaker(faker.RandStr(32))
 	require.NoError(t, err)
 
 	payload, err = maker.VerifyToken(token)

@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 
-	"we-backend/pkg/errno"
 	"we-backend/internal/types"
+	"we-backend/pkg/we"
 )
 
 
@@ -39,9 +39,9 @@ func (impl *userRawDatabase) Insert(ctx context.Context, user types.User) (int64
 		if errors.As(err, &mysqlError) {
 			switch {
 			case mysqlError.Number == 1062 && strings.Contains(mysqlError.Message, "users.uk_email"):
-				return 0, errno.ErrDuplicatedEntry.WithMessage("邮箱重复")
+				return 0, we.ErrDuplicatedEntry.WithMessage("邮箱重复")
 			default:
-				return 0, errno.ErrDuplicatedEntry
+				return 0, we.ErrDuplicatedEntry
 			}
 		}
 		return 0, err
@@ -84,7 +84,7 @@ func (impl *userRawDatabase) FindOne(ctx context.Context, id int64) (*types.User
 	)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
-		return nil, errno.ErrRecordNoFound
+		return nil, we.ErrNotFound
 	case err != nil :
 		return nil, err
 	default:

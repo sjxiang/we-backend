@@ -12,7 +12,7 @@ curl --location --request POST 'localhost:5678/api/v1/user/register' --header 'C
 
 # 异常请求，示范
 
-> 1. 不满足字段 tag，参数校验失败
+> 1. 不满足字段 tag（require 等等），参数校验失败
 
 ```bash
 curl --location --request POST 'localhost:5678/api/v1/user/register' \
@@ -32,7 +32,7 @@ curl --location --request POST 'localhost:5678/api/v1/user/register' \
 ```
 
 
-> 2. invalid json 格式错误，参数绑定，序列化失败
+> 2. invalid json 格式错误（标点符号遗漏），参数绑定，序列化失败
 
 ```bash
 curl --location --request POST 'localhost:5678/api/v1/user/register' \
@@ -51,7 +51,7 @@ curl --location --request POST 'localhost:5678/api/v1/user/register' \
 ```
 
 
-> 3. invalid json 类型不匹配，参数绑定，序列化失败
+> 3. invalid json 类型不匹配（string => int64），参数绑定，序列化失败
 
 ```bash
 curl --location --request POST 'localhost:5678/api/v1/user/register' \

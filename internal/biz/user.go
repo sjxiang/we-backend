@@ -2,105 +2,91 @@ package biz
 
 import (
 	"context"
-	"errors"
-	"time"
-
-	"we-backend/pkg/errno"
-	"we-backend/pkg/utils"
-	"we-backend/internal/service/token"
-	"we-backend/internal/types"
 	
-	"golang.org/x/crypto/bcrypt"
+	"we-backend/internal/types"
 )
 
 type UserUsecase struct {
-	userRepo     UserRepo
-	tokenService token.TokenService
+	UserRepo     UserRepo
 }
 
-func NewUserUsecase(userRepo UserRepo, tokenService token.TokenService) *UserUsecase {
+func NewUserUsecase(ur UserRepo) *UserUsecase {
 	return &UserUsecase{
-		userRepo:     userRepo, 
-		tokenService: tokenService,
+		UserRepo: ur, 
 	}
 }
 
-func (uc *UserUsecase) UserRegister(ctx context.Context, req *types.RegisterRequest) (*types.RegisterResponse, error) {
+
+func (uc *UserUsecase) Me(ctx context.Context, input types.MeInput) (types.MeResponse, error) {
 	
-	// 密码哈希
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	user, err := uc.UserRepo.GetByID(ctx, input.UserID)
 	if err != nil {
-		return nil, errors.New("failed to hash password")
+		return types.MeResponse{}, err
 	}
+	
+	return types.MeResponse{
+		User: mapUser(user),
+	}, nil 
+}
 
-	newUser := types.User{
-		Email:    req.Email,
-		Password: string(hashedPassword),
+// 函数名 ExportUserForFeedback
+func mapUser(u types.User) types.User {
+	return types.User{
+		Nickname:  u.Nickname,
+		Mobile:    u.Mobile,
+		Email:     u.Email,
+		Intro:     u.Intro,
+		Avatar:    u.Avatar,
+		Birthday:  u.Birthday,
+		CreatedAt: u.CreatedAt,
 	}
-
-	// 插入用户数据
-	id, err := uc.userRepo.Insert(ctx, newUser)
-	if err != nil {
-		return nil, err 
-	}
-
-	rsp := &types.RegisterResponse{
-		UserID: id,
-	}
-
-	return rsp, nil 
 }
 
 
-func (uc *UserUsecase) UserLogin(ctx context.Context, req *types.LoginRequest) (*types.LoginResponse, error) {
-	
-	// 通过邮箱检索用户
-	user, err := uc.userRepo.FindOneByEmail(ctx, req.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	// 密码校验
-	if valid, err := utils.PasswordMatches(user.Password, req.Password); err != nil || !valid {
-		return nil, errno.ErrInvalidCredentials
-	}
-
-	// 签发 token
-	accessToken, accessPayload, err := uc.tokenService.CreateToken(user.ID, user.Email, time.Duration(144))
-	if err != nil {
-		return nil, err 
-	}
-
-	rsp := &types.LoginResponse{
-		AccessToken:          accessToken,
-		AccessTokenExpiresAt: accessPayload.ExpiredAt,
-	}
-
-	return rsp, nil 
-}
-
-func (uc *UserUsecase) UserProfile(ctx context.Context, req *types.ProfileRequest) (*types.ProfileResponse, error) {
-	
-	user, err := uc.userRepo.FindOne(ctx, req.UserID)
-	if err != nil {
-		return nil, err
-	}
-	
-	rsp := &types.ProfileResponse{
-		Profile: types.ExportUserForFeedback(user),
-	}
-	return rsp, nil 
-}
-
-func (uc *UserUsecase) UserEditInfo(ctx context.Context, arg *types.EditParam) error {
+func (uc *UserUsecase) Edit(ctx context.Context, input types.EditInput) error {
 	
 	newUser := types.User{
-		ID:       arg.UserID,
-		Nickname: arg.Nickname,
-		Avatar:   arg.Avatar,
-		Intro:    arg.Intro,
-		Birthday: arg.Birthday, 
+		ID:       input.UserID,
+		Nickname: input.Nickname,
+		Avatar:   input.Avatar,
+		Intro:    input.Intro,
+		Birthday: input.Birthday, 
 	}
 
-	return uc.userRepo.Update(ctx, newUser)
+	return uc.UserRepo.Update(ctx, newUser)
+}
+
+
+func (uc *UserUsecase) All(ctx context.Context) (types.AllResponse, error) {
+
+	uu, err := uc.UserRepo.All(ctx)
+	if err != nil {
+		return types.AllResponse{}, err
+	}
+
+	return types.AllResponse{
+		Users: mapUsers(uu),
+	}, nil 
+}
+
+func convertUser(u types.User) *types.User {
+	return &types.User{
+		ID:        u.ID,
+		Nickname:  u.Nickname,
+		Mobile:    u.Mobile,
+		Email:     u.Email,
+		Intro:     u.Intro,
+		Avatar:    u.Avatar,
+		CreatedAt: u.CreatedAt,
+	}
+}
+
+func mapUsers(uu []types.User) []*types.User {
+	users := make([]*types.User, len(uu))
+
+	for i, u := range uu {
+		users[i] = convertUser(u)	
+	}
+
+	return users
 }

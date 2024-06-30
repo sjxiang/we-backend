@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"we-backend/internal/types"
-	"we-backend/pkg/errno"
+	"we-backend/pkg/we"
 	"we-backend/pkg/utils"
 	"we-backend/pkg/validate"
 )
@@ -17,30 +17,29 @@ import (
 func (h *handler) Edit(c *gin.Context) {
 	userID, err := utils.GetUserIDFromAuth(c)
 	if err != nil {
-		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage("请重新登录"))
+		utils.FeedbackBadRequest(c, we.ErrNotLogin.WithMessage(err.Error()))
 		return
 	}
-
 
 	var req types.EditRequest
 
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
-		utils.FeedbackBadRequest(c, errno.ErrMissingParameter.WithMessage(err.Error()))
+		utils.FeedbackBadRequest(c, we.ErrMissingParameter.WithMessage(err.Error()))
 		return
 	}
 
 	if err := validate.Check(req); err != nil {
-		utils.FeedbackBadRequest(c, errno.ErrInvalidParameter.WithMessage(err.Error()))
+		utils.FeedbackBadRequest(c, we.ErrInvalidParameter.WithMessage(err.Error()))
 		return
 	}
 
 	birthday, err := time.Parse(time.DateOnly, req.Birthday)
 	if err != nil {
-		utils.FeedbackBadRequest(c, errno.ErrInvalidParameter.WithMessage(err.Error()))  // 生日格式不对 YYYY-MM-DD
+		utils.FeedbackBadRequest(c, we.ErrInvalidParameter.WithMessage(err.Error()))  // 生日格式不对 YYYY-MM-DD
 		return  
 	}
 
-	arg := &types.EditParam{
+	input := types.EditInput{
 		UserID:   userID,
 		Nickname: req.Nickname,
 		Avatar:   req.Avatar,
@@ -48,10 +47,10 @@ func (h *handler) Edit(c *gin.Context) {
 		Birthday: birthday.Unix(), // 将时间转换为时间戳
 	}
 
-	if err := h.userUsecase.UserEditInfo(context.TODO(), arg); err != nil {
+	if err := h.UserUsecase.Edit(context.Background(), input); err != nil {
 		utils.FeedbackBadRequest(c, err)
 		return 
 	}
 
-	utils.FeedbackOK(c, "编辑成功")
+	utils.FeedbackOK(c, "编辑用户信息成功", nil)
 }

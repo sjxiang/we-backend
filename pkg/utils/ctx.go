@@ -98,3 +98,4 @@ func GetUserAuthTokenFromHeaderX(c *gin.Context) (string, error) {
 
 	return token, nil
 }
+

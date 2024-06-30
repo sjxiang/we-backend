@@ -21,21 +21,21 @@ func InitializeApi(cfg *conf.Config) (*api.Server, error) {
 	// repository
 	userDB := data.NewUserDatabase(db)
 	userCache := data.NewUserCache(cache, cfg)
+	
 	userRepo := data.NewUserRepo(userDB, userCache)
-	otpCache := data.NewOtpCache(cache)
-	otpRepo := data.NewOtpRepo(otpCache)
+	captchaRepo := data.NewCaptchaRepo(cache)
 
 	// external service
 	tokenService := token.NewTokenService(cfg)
 	accessControlService := accesscontrol.NewAccessControlService(cache, cfg)
-	emailService := mail.NewQQMailSender(cfg)
+	emailService := mail.NewLocalMailSender(cfg)
 
 	// usecase
-	userUsecase := biz.NewUserUsecase(userRepo, tokenService)
-	otpUsecase := biz.NewOtpUsecase(otpRepo, emailService)
-
+	authUsecase := biz.NewAuthUsecase(userRepo, captchaRepo, tokenService, emailService)
+	userUsecase := biz.NewUserUsecase(userRepo)
+	
 	// handler
-	handler := handler.NewHandler(userUsecase, otpUsecase)
+	handler := handler.NewHandler(userUsecase, authUsecase)
 
 	// middleware
 	middleware := middleware.NewMiddleware(tokenService, accessControlService)

@@ -10,6 +10,7 @@ import (
 func UserRoutes(group *gin.RouterGroup, h handler.Handler, m middleware.Middleware) {
 	
 		group.GET("/health", h.HealthCheck)
+		
 		group.POST("/register", h.Register)
 		group.POST("/login", h.Login)
 		group.POST("/login_sms/otp/send", h.SentOtp)
@@ -21,5 +22,5 @@ func UserRoutes(group *gin.RouterGroup, h handler.Handler, m middleware.Middlewa
 		
 		group.GET("/me", h.Me)
 		group.POST("/edit", h.Edit)
-
+		group.GET("/admin", h.Admin)
 }

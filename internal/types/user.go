@@ -1,15 +1,16 @@
 package types
 
- import (
+import (
 	"time"
 )
 
 type User struct {
-	ID        int64      `gorm:"column:id"`     
-	CreatedAt time.Time  `gorm:"column:created_at"`
-	UpdatedAt time.Time  `gorm:"column:updated_at"`
+	ID        int64      `gorm:"column:id"          json:"id"`         
+	CreatedAt time.Time  `gorm:"column:created_at"  json:"created_at"`
+	UpdatedAt time.Time  `gorm:"column:updated_at"  json:"-"`
+
 	Email     string     `gorm:"column:email"`  
-	Password  string     `gorm:"column:password"`     
+	Password  string     `gorm:"column:password"    json:"-"`     
 	Nickname  string     `gorm:"column:nickname"`
 	Mobile    string     `gorm:"column:mobile"`   
 	Intro     string     `gorm:"column:intro"`  
@@ -27,6 +28,14 @@ func (u User) TodayIsBirthday() bool {
 	return time.Now().Month() == birth.Month() && time.Now().Day() == birth.Day()
 }
 
+
+type UserM struct {
+
+}
+
+func (u UserM) TableName() string {
+	return "users"
+}
 
 // type UserM struct {
 // 	// 自增主键
@@ -57,3 +66,39 @@ func (u User) TodayIsBirthday() bool {
 // 	DeletedAt gorm.DeletedAt    `gorm:"index"`
 // }
 
+
+type MeInput struct {
+	UserID int64 
+}
+
+type MeResponse struct {
+	User User `json:"user"`
+}
+
+type EditRequest struct {
+	Nickname string `json:"nickname" validate:"required,min=8,max=30"`
+	Birthday string `json:"birthday" validate:"required,len=10"`  // 1997-09-12
+	Intro    string `json:"intro"    validate:"required,min=1,max=1000"`
+	Avatar   string `json:"avatar"   validate:"required"`
+}
+
+
+type EditInput struct {
+	UserID   int64
+	Nickname string 
+	Birthday int64 
+	Intro    string 
+	Avatar   string 
+}
+
+
+// tips 小贴士 修改密码、邮箱、手机，都要二次验证
+type ResetPasswordRequest struct {
+	Password        string   `json:"password"         validate:"required,min=8,max=32"`
+	PasswordConfirm string   `json:"password_confirm" validate:"eqfield=Password"`
+}
+
+
+type AllResponse struct {
+	Users []*User `json:"users"`
+}

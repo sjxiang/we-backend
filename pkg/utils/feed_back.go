@@ -2,9 +2,10 @@ package utils
 
 import (
 	"net/http"
-	"we-backend/pkg/errno"
 
 	"github.com/gin-gonic/gin"
+
+	"we-backend/pkg/we"
 )
 
 type Response struct {
@@ -14,16 +15,17 @@ type Response struct {
 }
 
 
-func FeedbackOK(c *gin.Context, data interface{}) {
+func FeedbackOK(c *gin.Context, msg string, data any) {
 	resp := Response{
-		Data: data,
+		Message: msg,
+		Data:    data,
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
 
 func FeedbackBadRequest(c *gin.Context, err error) {
-	e := errno.ConvertErr(err)
+	e := we.ConvertErr(err)
 
 	c.JSON(http.StatusBadRequest, Response{
 		Code:    e.ErrCode,
@@ -32,7 +34,7 @@ func FeedbackBadRequest(c *gin.Context, err error) {
 }
 
 func FeedbackInternalServerError(c *gin.Context, err error) {
-	e := errno.ConvertErr(err)
+	e := we.ConvertErr(err)
 
 	c.JSON(http.StatusInternalServerError, Response{
 		Code:    e.ErrCode,
@@ -42,7 +44,7 @@ func FeedbackInternalServerError(c *gin.Context, err error) {
 
 
 func FeedbackAuthorizedFailedError(c *gin.Context, err error) {
-	e := errno.ConvertErr(err)
+	e := we.ConvertErr(err)
 
 	c.AbortWithStatusJSON(http.StatusUnauthorized, Response{
 		Code:    e.ErrCode,
