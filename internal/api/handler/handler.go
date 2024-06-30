@@ -26,9 +26,9 @@ type Handler interface {
 
 	Register(c *gin.Context) 
 	Login(c *gin.Context)
-	SentOtp(c *gin.Context)
-	VerifyOtp(c *gin.Context)
-
+	LoginBySentOtp(c *gin.Context)
+	LoginByVerifyOtp(c *gin.Context)
+	
 	Me(c *gin.Context)
 	Edit(c *gin.Context)
 	Admin(c *gin.Context)

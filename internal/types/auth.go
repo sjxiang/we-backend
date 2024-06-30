@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"time"
 	"regexp"
 	"strings"
 	"unicode"
@@ -123,4 +124,9 @@ type SentOtpRequest struct {
 type VerifyOtpRequest struct {
 	PhoneNumber string `json:"phone_number" validate:"required"`  // 实际是邮箱
 	InputCode   string `json:"input_code" validate:"required"`
+}
+
+type LoginByOtpResponse struct {
+	AccessToken  string    `json:"access_token"`
+	ExpiresAt    time.Time `json:"expires_at"`
 }

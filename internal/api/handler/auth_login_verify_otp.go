@@ -12,7 +12,8 @@ import (
 	"we-backend/pkg/we"
 )
 
-func (h *handler) VerifyOtp(c *gin.Context) {
+func (h *handler) LoginByVerifyOtp(c *gin.Context) {
+
 	var req types.VerifyOtpRequest
 	
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
@@ -30,18 +31,13 @@ func (h *handler) VerifyOtp(c *gin.Context) {
 		PhoneNumber: req.PhoneNumber,
 		InputCode:   req.InputCode,
 	}
-	valid, err := h.AuthUsecase.VerifyOtp(context.TODO(), input)
+	resp, err := h.AuthUsecase.LoginByVerifyOtp(context.TODO(), input)
 	if err != nil {
 		utils.FeedbackBadRequest(c, err)
 		return 
 	}
 
-	if !valid {
-		utils.FeedbackBadRequest(c, we.ErrInvalidCredentials)
-		return
-	}
-
-	utils.FeedbackOK(c, "验证码校验通过", nil)
+	utils.FeedbackOK(c, "验证码校验通过", resp)
 }
 
 /*

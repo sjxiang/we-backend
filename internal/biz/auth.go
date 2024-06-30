@@ -106,7 +106,7 @@ func (au *AuthUsecase) Login(ctx context.Context, input types.LoginInput) (types
 }
 
 // 请求验证码
-func (au *AuthUsecase) SentOtp(ctx context.Context, input types.SentOtpInput) error {
+func (au *AuthUsecase) LoginBySentOtp(ctx context.Context, input types.SentOtpInput) error {
 
 	code := faker.RandIntSpec()
 	
@@ -127,6 +127,33 @@ func (au *AuthUsecase) SentOtp(ctx context.Context, input types.SentOtpInput) er
 
 
 // 验证码登录
-func (au *AuthUsecase) VerifyOtp(ctx context.Context, input types.VerifyOtpInput) (valid bool, err error) {
-	return au.CaptchaRepo.Verify(ctx, input.Biz, input.PhoneNumber, input.InputCode)
+func (au *AuthUsecase) LoginByVerifyOtp(ctx context.Context, input types.VerifyOtpInput) (types.LoginByOtpResponse, error) {
+	valid, err :=  au.CaptchaRepo.Verify(ctx, input.Biz, input.PhoneNumber, input.InputCode)
+	if err != nil {
+		return types.LoginByOtpResponse{}, err
+	}
+	if !valid {
+		return types.LoginByOtpResponse{}, we.ErrInvalidCredentials.WithMessage("验证码错误，请重新输入")
+	}
+
+	email := input.PhoneNumber
+	user, err := au.UserRepo.GetByEmail(ctx, email)
+	if err != nil {
+		switch {
+		case errors.Is(err, we.ErrNotFound):
+			return types.LoginByOtpResponse{}, we.ErrInvalidCredentials
+		default:
+			return types.LoginByOtpResponse{}, err
+		}
+	}
+
+	accessToken, accessPayload, err := au.TokenSvc.CreateToken(user.ID, user.Email, time.Duration(144))
+	if err != nil {
+		return types.LoginByOtpResponse{}, err 
+	}
+
+	return types.LoginByOtpResponse{
+		AccessToken: accessToken,
+		ExpiresAt:   accessPayload.ExpiredAt,
+	}, nil
 }

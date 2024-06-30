@@ -12,7 +12,8 @@ import (
 	"we-backend/pkg/validate"
 )
 
-func (h *handler) SentOtp(c *gin.Context) {
+func (h *handler) LoginBySentOtp(c *gin.Context) {
+	
 	var req types.SentOtpRequest
 	
 	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
@@ -29,7 +30,7 @@ func (h *handler) SentOtp(c *gin.Context) {
 		Biz:         "login",
 		PhoneNumber: req.PhoneNumber,
 	}
-	if err := h.AuthUsecase.SentOtp(context.Background(), input); err != nil {
+	if err := h.AuthUsecase.LoginBySentOtp(context.Background(), input); err != nil {
 		utils.FeedbackBadRequest(c, err)
 		return 
 	}
